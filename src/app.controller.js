@@ -1,5 +1,5 @@
 import dbconeection from "./DB/db.connection.js"
-//import authroutes from '../src/moduels/auth/auth.routes.js'
+import authroutes from '../src/moduels/auth/auth.routes.js'
 
 
 
@@ -11,7 +11,7 @@ const bootstrap =(app,express)=>{
     app.use(cors())
 
 
-    //app.use('/auth',authroutes)
+    app.use('/auth',authroutes)
 
 
 
