@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import mongoose from "mongoose";
-config()
+config();
 const dbconeection=async()=>{
   await mongoose.connect(process.env.DB_URI).then(res=>{
     console.log(`db connected`)
