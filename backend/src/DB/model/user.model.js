@@ -1,6 +1,7 @@
 import mongoose, { model, Schema ,Types} from "mongoose";
 
 const gendertype={male:'male',female:'female'}
+const roletype={user:'user',admin:'admin'}
 export const userschema=new Schema({
 username:{
     type:String,
@@ -33,6 +34,11 @@ gender:{
 type:String,
 enum:Object.values(gendertype),
 default:gendertype.male
+},
+role:{
+type:String,
+enum:Object.values(roletype),
+default:roletype.user
 },
 
 
