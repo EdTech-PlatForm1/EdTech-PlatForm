@@ -1,7 +1,7 @@
 import dbconeection from "./DB/db.connection.js"
 import authroutes from '../src/moduels/auth/auth.routes.js'
-
-
+import wishlist from '../src/moduels/wishlist/wishlist.routes.js'
+import {globalErrorhandling} from '../src/utils/response/error.response.js'
 
 import cors from 'cors'
 
@@ -10,9 +10,8 @@ const bootstrap =(app,express)=>{
     app.use(express.json())
     app.use(cors())
 
-
     app.use('/auth',authroutes)
-
+   app.use('wishlist',wishlist)
 
 
 
@@ -21,7 +20,7 @@ const bootstrap =(app,express)=>{
 
 
  })
-
+ app.use(globalErrorhandling)
  dbconeection()
 
 }
