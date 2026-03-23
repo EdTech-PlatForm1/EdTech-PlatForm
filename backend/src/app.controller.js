@@ -1,7 +1,8 @@
 import dbconeection from "./DB/db.connection.js"
 import authroutes from '../src/moduels/auth/auth.routes.js'
 
-
+import ordersroutes from '../src/moduels/orders/orders.routes.js'
+import productroutes from '../src/moduels/products/products.routes.js'
 
 import cors from 'cors'
 
@@ -12,7 +13,9 @@ const bootstrap =(app,express)=>{
 
 
     app.use('/auth',authroutes)
-
+   app.use("/uploads", express.static("uploads"));
+   app.use('/', ordersroutes);
+   app.use('/', productroutes);
 
 
 
