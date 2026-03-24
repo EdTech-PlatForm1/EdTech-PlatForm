@@ -1,30 +1,34 @@
 import dbconeection from "./DB/db.connection.js"
-import authroutes from '../src/moduels/auth/auth.routes.js'
-import wishlist from '../src/moduels/wishlist/wishlist.routes.js'
-import {globalErrorhandling} from '../src/utils/response/error.response.js'import ordersroutes from '../src/moduels/orders/orders.routes.js'
-import productroutes from '../src/moduels/products/products.routes.js'
+import authroutes from './moduels/auth/auth.routes.js'
+import wishlist from './moduels/wishlist/wishlist.routes.js'
+import { globalErrorhandling } from './utils/response/error.response.js'
+import ordersroutes from './moduels/orders/orders.routes.js'
+import productroutes from './moduels/products/products.routes.js'
+import cartroutes from './moduels/cart/cart.controller.js'
 
 import cors from 'cors'
 
 
-const bootstrap =(app,express)=>{
-    app.use(express.json())
-    app.use(cors())
+const bootstrap = (app, express) => {
+   app.use(express.json())
+   app.use(cors())
 
-    app.use('/auth',authroutes)
+   app.use('/auth', authroutes)
    app.use("/uploads", express.static("uploads"));
-   app.use('/', ordersroutes);
-   app.use('/', productroutes);   app.use('wishlist',wishlist)
+   app.use('/order', ordersroutes);
+   app.use('/product', productroutes);
+   app.use('/wishlist', wishlist)
+   app.use('/cart', cartroutes)
 
 
 
- app.use("*",(req,res,next)=>{
-    return res.status(404).json({message:"invalid routing"})
+   app.use("*", (req, res, next) => {
+      return res.status(404).json({ message: "invalid routing" })
 
 
- })
- app.use(globalErrorhandling)
- dbconeection()
+   })
+   app.use(globalErrorhandling)
+   dbconeection()
 
 }
 

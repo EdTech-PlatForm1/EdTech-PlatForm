@@ -20,10 +20,10 @@ const productSchema = new mongoose.Schema({
   discount: {
     type: Number,
     default: 0,
-      min: 0,
-  max: 100
+    min: 0,
+    max: 100
   },
-    finalPrice: {
+  finalPrice: {
     type: Number,
     default: 0
   },
@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
 
     }
   ],
-    challenges: [
+  challenges: [
     {
       type: String
     }
@@ -56,7 +56,7 @@ const productSchema = new mongoose.Schema({
   stock: {
     type: Number,
     default: 0,
-      min: 0
+    min: 0
   },
 
   rating: {

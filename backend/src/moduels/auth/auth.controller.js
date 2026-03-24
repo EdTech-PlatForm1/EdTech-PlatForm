@@ -34,7 +34,7 @@ export const login = asynchandler(
       return next(new Error("invalid email or password", { cause: 400 }));
     }
     const accessToken = generateToken({
-      payload: { id: user._id, email: user.email },
+      payload: { id: user._id, email: user.email, role: user.role },
       signature: process.env.ACCESS_TOKEN_SIGNATURE,
       expiresIn: "7d",
     });

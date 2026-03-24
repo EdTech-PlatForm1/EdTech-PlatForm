@@ -1,0 +1,149 @@
+@baseUrl = http://localhost:4000
+
+# To use this file, install the 'REST Client' extension in VS Code.
+# 1. Start the backend server (npm run dev)
+# 2. Click "Send Request" above the URL
+# 3. For protected routes, replace the tokens below.
+
+@token = REPLACE_WITH_YOUR_USER_TOKEN
+@adminToken = REPLACE_WITH_YOUR_ADMIN_TOKEN
+
+### ==========================================
+### 1. AUTHENTICATION MODULE
+### ==========================================
+
+### 1.1 Signup New User
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "tester1",
+  "email": "tester1@example.com",
+  "password": "Password123!",
+  "confirmationpassword": "Password123!"
+}
+
+### 1.2 Login User (Copy 'accessToken' to @token above)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "tester1@example.com",
+  "password": "Password123!"
+}
+
+### 1.3 Get All Users (Admin Only)
+GET {{baseUrl}}/auth/users
+Authorization: Bearer {{adminToken}}
+
+### ==========================================
+### 2. PRODUCTS MODULE
+### ==========================================
+
+### 2.1 Get All Products (Public)
+GET {{baseUrl}}/product/getAll
+
+### 2.2 Get Single Product (Public)
+# Replace :id with a valid product ID
+GET {{baseUrl}}/product/get/65f1234567890abcdef12345
+
+### 2.3 Create Product (Admin Only)
+# Note: For multipart/form-data (images), you'd normally use a tool like Postman. 
+# This is a sample request assuming JSON fallbacks if you bypass multer in testing.
+POST {{baseUrl}}/product/create
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "productName": "Advanced JavaScript Course",
+  "price": 99.99,
+  "stock": 100,
+  "description": "Learn modern ES6+ features."
+}
+
+### 2.4 Add Tutorial to Product (Admin Only)
+POST {{baseUrl}}/product/addTutorial/65f1234567890abcdef12345
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "tutorialName": "Lesson 1: Closures",
+  "videoUrl": "http://example.com/video1.mp4"
+}
+
+### ==========================================
+### 3. ORDERS MODULE
+### ==========================================
+
+### 3.1 Create Order (User)
+POST {{baseUrl}}/order/create
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "products": [
+    {
+      "product": "65f1234567890abcdef12345",
+      "quantity": 1
+    }
+  ],
+  "address": {
+    "street": "123 Main St",
+    "city": "Metropolis",
+    "country": "Fictionland",
+    "phone": "01234567890"
+  },
+  "paymentMethod": "cash"
+}
+
+### 3.2 Get User Order History (User)
+GET {{baseUrl}}/order/history
+Authorization: Bearer {{token}}
+
+### 3.3 Get All Orders (Admin Only)
+GET {{baseUrl}}/order/getAll
+Authorization: Bearer {{adminToken}}
+
+### 3.4 Confirm Payment (Admin Only)
+PATCH {{baseUrl}}/order/confirm-payment/65f1234567890abcdef12345
+Authorization: Bearer {{adminToken}}
+
+### ==========================================
+### 4. CART MODULE
+### ==========================================
+
+### 4.1 Add Product to Cart (User)
+POST {{baseUrl}}/cart/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productId": "65f1234567890abcdef12345",
+  "quantity": 2
+}
+
+### 4.2 Get User Cart (User)
+GET {{baseUrl}}/cart/get
+Authorization: Bearer {{token}}
+
+### 4.3 Clear Cart (User)
+DELETE {{baseUrl}}/cart/clear
+Authorization: Bearer {{token}}
+
+### ==========================================
+### 5. WISHLIST MODULE
+### ==========================================
+
+### 5.1 Add Product to Wishlist (User)
+POST {{baseUrl}}/wishlist/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productId": "65f1234567890abcdef12345",
+  "guestId": "guest-device-12345"
+}
+
+### 5.2 Get User Wishlist (User)
+GET {{baseUrl}}/wishlist/get/guest-device-12345
+Authorization: Bearer {{token}}

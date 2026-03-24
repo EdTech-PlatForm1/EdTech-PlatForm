@@ -1,6 +1,6 @@
 
-import Product from "../products/products.schema.js";
-import Order from "./orders.schema.js";
+import Product from "../../DB/model/products.schema.js";
+import Order from "../../DB/model/orders.schema.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -22,7 +22,7 @@ export const createOrder = async (req, res) => {
       orderProducts.push({
         product: product._id,
         quantity: item.quantity,
-        price: price 
+        price: price
       });
 
       // تحديث المخزون بدون transaction
@@ -33,7 +33,7 @@ export const createOrder = async (req, res) => {
     }
 
     const order = await Order.create({
-      user: req.user._id,
+      user: req.userID,
       products: orderProducts,
       totalPrice,
       address,
@@ -64,9 +64,9 @@ export const confirmPayment = async (req, res) => {
     if (["cancelled", "failed", "returned"].includes(order.status)) {
       return res.status(400).json({ message: "Cannot pay this order" });
     }
-if (order.paymentMethod === "cash") {
-  return res.status(400).json({ message: "Cash orders are paid on delivery" });
-}
+    if (order.paymentMethod === "cash") {
+      return res.status(400).json({ message: "Cash orders are paid on delivery" });
+    }
     order.isPaid = true;
     if (order.status === "pending") {
       order.status = "paid";
@@ -212,7 +212,7 @@ export const getAllOrders = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    let filter =  { isDeleted: false };
+    let filter = { isDeleted: false };
 
     if (status) {
       filter.status = status;
@@ -276,7 +276,7 @@ export const getSingleOrder = async (req, res) => {
 };
 export const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({  user: req.user._id, isDeleted: false  });
+    const orders = await Order.find({ user: req.userID, isDeleted: false });
 
     res.status(200).json({
       message: "User orders fetched successfully",
@@ -330,8 +330,8 @@ export const restoreOrder = async (req, res) => {
 };
 export const getUserOrderHistory = async (req, res) => {
   try {
-    const userId = req.user._id; 
-    const { status } = req.query; 
+    const userId = req.userID;
+    const { status } = req.query;
 
     let query = { user: userId };
 
@@ -548,7 +548,7 @@ export const updateOrder = async (req, res) => {
 
 export const getUserTutorials = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.userID;
 
     const orders = await Order.find({ user: userId, isDeleted: false })
       .populate("products.product", "productName tutorials");

@@ -1,4 +1,4 @@
-import Product from "../products/products.schema.js";
+import Product from "../../DB/model/products.schema.js";
 
 export const createProduct = async (req, res) => {
   try {
@@ -31,16 +31,16 @@ export const createProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const { 
-      name, 
-      minPrice, 
-      maxPrice, 
-      discount, 
-      rating, 
-      pagenumber, 
-      perpageproduct, 
-      sortBy = "createdAt", 
-      order = "desc" 
+    const {
+      name,
+      minPrice,
+      maxPrice,
+      discount,
+      rating,
+      pagenumber,
+      perpageproduct,
+      sortBy = "createdAt",
+      order = "desc"
     } = req.query;
 
     const allowedSort = ["price", "createdAt", "rating"];
@@ -244,10 +244,10 @@ export const addTutorial = async (req, res) => {
       return res.status(400).json({ message: "Tutorial is required" });
     }
 
-       const product = await Product.findByIdAndUpdate(
+    const product = await Product.findByIdAndUpdate(
       id,
-  { $push: { tutorials: { $each: tutorial } } },
-  { new: true }
+      { $push: { tutorials: tutorial } },
+      { new: true }
     );
 
 
@@ -323,8 +323,7 @@ export const addChallenge = async (req, res) => {
 
     const product = await Product.findByIdAndUpdate(
       id,
-
-  { $push: { challenges: { $each: challenges } } },
+      { $push: { challenges: challenge } },
       { new: true }
     );
 
@@ -405,9 +404,9 @@ export const getChallengesByProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    return res.status(200).json({ 
-      message: "Challenges retrieved successfully", 
-      challenges: product.challenges 
+    return res.status(200).json({
+      message: "Challenges retrieved successfully",
+      challenges: product.challenges
     });
 
   } catch (error) {
