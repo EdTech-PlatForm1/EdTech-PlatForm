@@ -4,9 +4,10 @@ import wishlist from './moduels/wishlist/wishlist.routes.js'
 import { globalErrorhandling } from './utils/response/error.response.js'
 import ordersroutes from './moduels/orders/orders.routes.js'
 import productroutes from './moduels/products/products.routes.js'
-import cartroutes from './moduels/cart/cart.controller.js'
-
+import cartroutes from './moduels/cart/cart.routes.js'
+import reviewroutes from './moduels/review/review.router.js'
 import cors from 'cors'
+
 
 
 const bootstrap = (app, express) => {
@@ -14,6 +15,7 @@ const bootstrap = (app, express) => {
    app.use(cors())
 
    app.use('/auth', authroutes)
+    app.use('/review', reviewroutes)
    app.use("/uploads", express.static("uploads"));
    app.use('/order', ordersroutes);
    app.use('/product', productroutes);
