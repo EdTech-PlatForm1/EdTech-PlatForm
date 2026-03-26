@@ -1,0 +1,75 @@
+<div class="auth-container">
+  <div class="auth-card">
+
+    <h2>
+      {{ activeTab === 'login' ? 'Welcome Back 👋' : 'Create Account 🚀' }}
+    </h2>
+
+    <!-- Tabs -->
+    <div class="tab-buttons">
+      <button type="button"
+        (click)="setTab('login')"
+        [class.active]="activeTab === 'login'">
+        Sign In
+      </button>
+
+      <button type="button"
+        (click)="setTab('register')"
+        [class.active]="activeTab === 'register'">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="error" class="alert error">
+      ❌ {{ error }}
+    </div>
+
+    <div *ngIf="message" class="alert success">
+      ✅ {{ message }}
+    </div>
+
+    <!-- Login -->
+    <form *ngIf="activeTab === 'login'"
+          (ngSubmit)="onLogin()"
+          [formGroup]="loginForm">
+
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="example@mail.com">
+
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="••••••••">
+
+      <button type="submit" [disabled]="loading || loginForm.invalid">
+        {{ loading ? '⏳ Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <!-- Register -->
+    <form *ngIf="activeTab === 'register'"
+          (ngSubmit)="onRegister()"
+          [formGroup]="registerForm">
+
+      <label>Username</label>
+      <input type="text" formControlName="username" placeholder="johndoe">
+
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="example@mail.com">
+
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="••••••••">
+
+      <label>Confirm Password</label>
+      <input type="password" formControlName="confirmPassword" placeholder="••••••••">
+
+      <button type="submit" [disabled]="loading || registerForm.invalid">
+        {{ loading ? '⏳ Creating...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <div class="hint">
+      Password must be at least 6 characters
+    </div>
+
+  </div>
+</div>
