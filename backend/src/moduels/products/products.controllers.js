@@ -1,4 +1,5 @@
 import Product from "../products/products.schema.js";
+import Order from "../orders/orders.schema.js";
 
 export const createProduct = async (req, res) => {
   try {
@@ -159,8 +160,8 @@ export const hardDeleteProduct = async (req, res) => {
     if (!deletedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
+    return res.status(200).json({ message: "Product deleted successfully" });
 
-    return res.status(204).send();
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -193,7 +194,10 @@ export const updateProduct = async (req, res) => {
       updates.images = req.files.map(file => file.path);
     }
 
-    const product = await Product.findById(id);
+       const product = await Product.findOne({
+      _id: id,
+      isDeleted: false
+    });
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
@@ -238,177 +242,22 @@ export const restoreProduct = async (req, res) => {
 export const addTutorial = async (req, res) => {
   try {
     const { id } = req.params;
-    const { tutorial } = req.body;
-
-    if (!tutorial || typeof tutorial !== "string") {
-      return res.status(400).json({ message: "Tutorial is required" });
-    }
-
-       const product = await Product.findByIdAndUpdate(
-      id,
-  { $push: { tutorials: { $each: tutorial } } },
-  { new: true }
-    );
-
-
-    return res.status(201).json({ message: "Tutorial added", product });
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-export const updateTutorial = async (req, res) => {
-  try {
-    const { id, index } = req.params;
-    const { tutorial } = req.body;
-
-    if (!tutorial || typeof tutorial !== "string") {
-      return res.status(400).json({ message: "Tutorial is required" });
-    }
+    const { title, videoUrl, duration } = req.body;
 
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    const idx = Number(index);
-
-    if (isNaN(idx) || idx < 0 || idx >= product.tutorials.length) {
-      return res.status(400).json({ message: "Invalid tutorial index" });
+    const exists = product.tutorials.find(t => t.title === title);
+    if (exists) {
+      return res.status(400).json({ message: "Tutorial title already exists" });
     }
 
-    product.tutorials[idx] = tutorial;
+    product.tutorials.push({ title, videoUrl, duration });
     await product.save();
 
-    return res.status(200).json({ message: "Tutorial updated", product });
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-export const deleteTutorial = async (req, res) => {
-  try {
-    const { id, index } = req.params;
-
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    const idx = Number(index);
-
-    if (isNaN(idx) || idx < 0 || idx >= product.tutorials.length) {
-      return res.status(400).json({ message: "Invalid tutorial index" });
-    }
-
-    product.tutorials.splice(idx, 1);
-    await product.save();
-
-    return res.status(200).json({ message: "Tutorial deleted", product });
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-export const addChallenge = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { challenge } = req.body;
-
-    if (!challenge || typeof challenge !== "string") {
-      return res.status(400).json({ message: "Challenge is required" });
-    }
-
-    const product = await Product.findByIdAndUpdate(
-      id,
-
-  { $push: { challenges: { $each: challenges } } },
-      { new: true }
-    );
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    return res.status(200).json({ message: "Challenge added", product });
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-export const updateChallenge = async (req, res) => {
-  try {
-    const { id, index } = req.params;
-    const { challenge } = req.body;
-
-    if (!challenge || typeof challenge !== "string") {
-      return res.status(400).json({ message: "Challenge is required" });
-    }
-
-    const product = await Product.findById(id);
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    const idx = Number(index);
-
-    if (isNaN(idx) || idx < 0 || idx >= product.challenges.length) {
-      return res.status(400).json({ message: "Invalid challenge index" });
-    }
-
-    product.challenges[idx] = challenge;
-    await product.save();
-
-    return res.status(200).json({ message: "Challenge updated", product });
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-export const deleteChallenge = async (req, res) => {
-  try {
-    const { id, index } = req.params;
-
-    const product = await Product.findById(id);
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    const idx = Number(index);
-
-    if (isNaN(idx) || idx < 0 || idx >= product.challenges.length) {
-      return res.status(400).json({ message: "Invalid challenge index" });
-    }
-
-    product.challenges.splice(idx, 1);
-    await product.save();
-
-    return res.status(200).json({ message: "Challenge deleted", product });
-
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-export const getChallengesByProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const product = await Product.findById(id).select("challenges");
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    return res.status(200).json({ 
-      message: "Challenges retrieved successfully", 
-      challenges: product.challenges 
-    });
+    return res.status(201).json({ message: "Tutorial added successfully", tutorials: product.tutorials });
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -420,16 +269,254 @@ export const getTutorialsByProduct = async (req, res) => {
 
     const product = await Product.findById(id).select("tutorials");
 
-    if (!product) {
+    if (!product || product.isDeleted) {
       return res.status(404).json({ message: "Product not found" });
     }
 
     return res.status(200).json({
-      message: "Tutorials retrieved successfully",
+      message: "Tutorials fetched successfully",
       tutorials: product.tutorials
     });
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+export const getTutorialsForUser = async (req, res) => {
+  try {
+    const userId = req.user._id; 
+    const { productId } = req.params;
+
+    const order = await Order.findOne({
+      user: userId,
+      
+      "products.product": productId,
+      status: "delivered"
+    });
+
+    if (!order) {
+      return res.status(403).json({
+        message: "You must purchase this product to access tutorials"
+      });
+    }
+
+    const product = await Product.findById(productId).select("tutorials");
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({
+      message: "User tutorials fetched successfully",
+      tutorials: product.tutorials
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateTutorial = async (req, res) => {
+  try {
+    const { id, tutorialId } = req.params;
+    const { title, videoUrl, duration } = req.body;
+
+    const product = await Product.findById(id);
+    if (!product || product.isDeleted) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const tutorial = product.tutorials.id(tutorialId);
+    if (!tutorial) return res.status(404).json({ message: "Tutorial not found" });
+
+    const exists = product.tutorials.find(
+      t => t.title === title && t._id.toString() !== tutorialId
+    );
+    if (exists) return res.status(400).json({ message: "Tutorial title already exists" });
+
+    if (title) tutorial.title = title;
+    if (videoUrl) tutorial.videoUrl = videoUrl;
+    if (duration) tutorial.duration = duration;
+
+    await product.save();
+
+    return res.status(200).json({ message: "Tutorial updated successfully", tutorials: product.tutorials });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+export const deleteTutorial = async (req, res) => {
+  try {
+    const { id, tutorialId } = req.params;
+
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+      const index = product.tutorials.findIndex(t => t._id.toString() === tutorialId);
+    if (index === -1) return res.status(404).json({ message: "Tutorial not found" });
+
+    product.tutorials.splice(index, 1);
+    await product.save();
+
+    return res.status(200).json({ message: "Tutorial deleted successfully", tutorials: product.tutorials });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+export const addChallenge = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const { question, correctAnswer } = req.body;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const exists = product.challenges.find(c => c.question === question);
+    if (exists) {
+      return res.status(400).json({ message: "Challenge question already exists" });
+    }
+
+    product.challenges.push({ question, correctAnswer });
+    await product.save();
+
+    return res.status(201).json({ message: "Challenge added successfully", challenges: product.challenges });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+export const updateChallenge = async (req, res) => {
+  try {
+    const { id, challengeId } = req.params;
+    const { question, correctAnswer } = req.body;
+
+    const product = await Product.findById(id);
+    if (!product || product.isDeleted) return res.status(404).json({ message: "Product not found" });
+
+    const challenge = product.challenges.id(challengeId);
+    if (!challenge) return res.status(404).json({ message: "Challenge not found" });
+
+    if (question && question !== challenge.question) {
+      const exists = product.challenges.find(
+        c => c.question === question && c._id.toString() !== challengeId
+      );
+      if (exists) return res.status(400).json({ message: "Challenge question already exists" });
+      challenge.question = question;
+    }
+
+    if (question) challenge.question = question;
+    if (correctAnswer) challenge.correctAnswer = correctAnswer;
+
+    await product.save();
+
+    return res.status(200).json({ message: "Challenge updated successfully", challenges: product.challenges });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+export const deleteChallenge = async (req, res) => {
+  try {
+    const { id, challengeId } = req.params; 
+
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const index = product.challenges.findIndex(c => c._id.toString() === challengeId);
+    if (index === -1) return res.status(404).json({ message: "Challenge not found" });
+
+    product.challenges.splice(index, 1);
+    await product.save();
+
+    return res.status(200).json({ message: "Challenge deleted successfully", challenges: product.challenges });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+export const getChallengesByProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id).select("challenges");
+
+    if (!product || product.isDeleted) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({
+      message: "Challenges fetched successfully",
+      challenges: product.challenges
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+export const getChallengesForUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { productId } = req.params;
+    const order = await Order.findOne({
+      user: userId,
+      "products.product": productId,
+      status: "delivered"
+    });
+
+    if (!order) {
+      return res.status(403).json({
+        message: "You must purchase this product to access challenges"
+      });
+    }
+
+    const product = await Product.findById(productId).select("challenges");
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    return res.status(200).json({
+      message: "User challenges fetched successfully",
+      challenges: product.challenges
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+export const solveChallenge = async (req, res) => {
+  try {
+    const { id, challengeId } = req.params;
+    const { answer } = req.body;
+
+    const product = await Product.findOne({ _id: id, isDeleted: false });
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const challenge = product.challenges.id(challengeId); 
+    if (!challenge) {
+      return res.status(404).json({ message: "Challenge not found" });
+    }
+
+    const isCorrect = challenge.correctAnswer === answer;
+
+    res.status(200).json({
+      correct: isCorrect,
+      message: isCorrect ? "Correct answer" : "Wrong answer"
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
