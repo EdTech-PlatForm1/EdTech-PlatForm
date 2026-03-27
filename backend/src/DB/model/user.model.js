@@ -23,6 +23,7 @@ email:{
     trim:true,
 },
 otp:String,
+otpExpiresAt:Date,
 DOB:Date,
 phone:String,
 image:String,

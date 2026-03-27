@@ -1,17 +1,14 @@
-import Product from "../products/products.schema.js";
-import Order from "./orders.schema.js";
+import Product from "../../DB/model/products.schema.js";
+import Order from "../../DB/model/orders.schema.js";
 import mongoose from "mongoose";
 export const createOrder = async (req, res) => {
-  const session = await mongoose.startSession();
   try {
-    session.startTransaction();
-
     const { products, address, paymentMethod } = req.body;
     let totalPrice = 0;
     const orderProducts = [];
 
     for (const item of products) {
-      const product = await Product.findById(item.product).session(session);
+      const product = await Product.findById(item.product);
       if (!product) throw new Error(`Product not found: ${item.product}`);
       if (product.stock < item.quantity)
         throw new Error(`Not enough stock for ${product.productName}`);
@@ -26,38 +23,27 @@ export const createOrder = async (req, res) => {
 
       await Product.updateOne(
         { _id: product._id },
-        { $inc: { stock: -item.quantity } },
-        { session }
+        { $inc: { stock: -item.quantity } }
       );
     }
 
-    const order = await Order.create(
-      [
-        {
-          user: req.user._id,
-          products: orderProducts,
-          subtotal: totalPrice,
-          shippingCost: 0,
-          totalPrice: totalPrice,
-          address,
-          paymentMethod,
-          isPaid: false,
-          status: "pending",
-        },
-      ],
-      { session }
-    );
-
-    await session.commitTransaction();
-    session.endSession();
+    const order = await Order.create({
+      user: req.user._id,
+      products: orderProducts,
+      subtotal: totalPrice,
+      shippingCost: 0,
+      totalPrice: totalPrice,
+      address,
+      paymentMethod,
+      isPaid: false,
+      status: "pending",
+    });
 
     res.status(201).json({
       message: "Order created successfully",
-      order: order[0],
+      order,
     });
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
     res.status(400).json({ message: err.message });
   }
 };
@@ -357,14 +343,11 @@ export const getSingleOrder = async (req, res) => {
 };
 
 export const updateOrder = async (req, res) => {
-  const session = await mongoose.startSession();
   try {
-    session.startTransaction();
-
     const { id } = req.params;
     const { address, paymentMethod, products } = req.body;
 
-    const order = await Order.findById(id).session(session);
+    const order = await Order.findById(id);
     if (!order || order.isDeleted) throw new Error("Order not found or deleted");
 
     if (["shipped", "delivered", "cancelled", "failed", "returned"].includes(order.status)) {
@@ -378,8 +361,7 @@ export const updateOrder = async (req, res) => {
       for (const item of order.products) {
         await Product.updateOne(
           { _id: item.product },
-          { $inc: { stock: item.quantity } },
-          { session }
+          { $inc: { stock: item.quantity } }
         );
       }
 
@@ -387,7 +369,7 @@ export const updateOrder = async (req, res) => {
       const orderProducts = [];
 
       for (const item of products) {
-        const product = await Product.findById(item.product).session(session);
+        const product = await Product.findById(item.product);
         if (!product) throw new Error(`Product not found: ${item.product}`);
         if (product.stock < item.quantity)
           throw new Error(`Not enough stock for ${product.productName}`);
@@ -402,8 +384,7 @@ export const updateOrder = async (req, res) => {
 
         await Product.updateOne(
           { _id: product._id },
-          { $inc: { stock: -item.quantity } },
-          { session }
+          { $inc: { stock: -item.quantity } }
         );
       }
 
@@ -411,14 +392,9 @@ export const updateOrder = async (req, res) => {
       order.totalPrice = totalPrice;
     }
 
-    await order.save({ session });
-    await session.commitTransaction();
-    session.endSession();
-
+    await order.save();
     res.status(200).json({ message: "Order updated successfully", order });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     res.status(500).json({ message: error.message });
   }
 };
@@ -548,12 +524,9 @@ export const getOrderStatus = async (req, res) => {
   }
 };
 export const cancelOrder = async (req, res) => {
-  const session = await mongoose.startSession();
   try {
-    session.startTransaction();
-
     const { id } = req.params;
-    const order = await Order.findById(id).session(session);
+    const order = await Order.findById(id);
     if (!order) throw new Error("Order not found");
 
     if (["cancelled", "failed", "returned", "delivered"].includes(order.status)) {
@@ -587,8 +560,7 @@ export const cancelOrder = async (req, res) => {
     for (const item of order.products) {
       await Product.updateOne(
         { _id: item.product },
-        { $inc: { stock: item.quantity } },
-        { session }
+        { $inc: { stock: item.quantity } }
       );
     }
 
@@ -603,14 +575,9 @@ export const cancelOrder = async (req, res) => {
     order.finalCollected = finalCollected;
     order.penalty = penalty;
 
-    await order.save({ session });
-    await session.commitTransaction();
-    session.endSession();
-
+    await order.save();
     res.json({ message: "Order cancelled successfully", order });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     res.status(500).json({ message: error.message });
   }
 };
@@ -651,12 +618,9 @@ export const completeRefund = async (req, res) => {
   }
 };
 export const returnOrder = async (req, res) => {
-  const session = await mongoose.startSession();
   try {
-    session.startTransaction();
-
     const { id } = req.params;
-    const order = await Order.findById(id).session(session);
+    const order = await Order.findById(id);
     if (!order) throw new Error("Order not found");
 
     if (order.status !== "delivered") throw new Error("Only delivered orders can be returned");
@@ -664,8 +628,7 @@ export const returnOrder = async (req, res) => {
     for (const item of order.products) {
       await Product.updateOne(
         { _id: item.product },
-        { $inc: { stock: item.quantity } },
-        { session }
+        { $inc: { stock: item.quantity } }
       );
     }
 
@@ -676,23 +639,15 @@ export const returnOrder = async (req, res) => {
     order.finalCollected = order.shippingCost;
     order.penalty = order.shippingCost;
 
-    await order.save({ session });
-    await session.commitTransaction();
-    session.endSession();
-
+    await order.save();
     res.json({ message: "Order returned successfully", order });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     res.status(500).json({ message: error.message });
   }
 };
 export const failOrder = async (req, res) => {
-  const session = await mongoose.startSession();
   try {
-    session.startTransaction();
-
-    const order = await Order.findById(req.params.id).session(session);
+    const order = await Order.findById(req.params.id);
     if (!order) throw new Error("Order not found");
 
     if (["cancelled", "failed", "delivered", "returned"].includes(order.status)) {
@@ -702,8 +657,7 @@ export const failOrder = async (req, res) => {
     for (const item of order.products) {
       await Product.updateOne(
         { _id: item.product },
-        { $inc: { stock: item.quantity } },
-        { session }
+        { $inc: { stock: item.quantity } }
       );
     }
 
@@ -723,14 +677,9 @@ export const failOrder = async (req, res) => {
       }
     }
 
-    await order.save({ session });
-    await session.commitTransaction();
-    session.endSession();
-
+    await order.save();
     res.json({ message: "Order marked as failed", order });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     res.status(500).json({ message: error.message });
   }
 };
@@ -776,7 +725,7 @@ export const getUserChallenges = async (req, res) => {
   try {
     const userId = req.userID;
 
-    const orders = await Order.find({ user: userId, isDeleted: false })
+    const orders = await Order.find({ user: userId, status: "delivered", isDeleted: false })
       .populate("products.product", "productName challenges");
 
     if (!orders.length) {

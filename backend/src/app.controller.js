@@ -11,11 +11,22 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
+import rateLimit from 'express-rate-limit';
 dotenv.config();
 
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, 
+	limit: 100, 
+	standardHeaders: 'draft-7',
+	legacyHeaders: false, 
+})
+
 const bootstrap = (app, express) => {
+   app.use(limiter)
    app.use(express.json())
-   app.use(cors())
+   app.use(cors({ origin: 'http://localhost:4200', credentials: true }))
+   console.log('Registering routes...');
+   app.use('/auth', authroutes)
    app.use(
     session({
       secret: "secret",
@@ -78,8 +89,7 @@ const bootstrap = (app, express) => {
 
 
    
-   app.use('/auth', authroutes)
-    app.use('/review', reviewroutes)
+   app.use('/review', reviewroutes)
    app.use("/uploads", express.static("uploads"));
    app.use('/order', ordersroutes);
    app.use('/product', productroutes);
