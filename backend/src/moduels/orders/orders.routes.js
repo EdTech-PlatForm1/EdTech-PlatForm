@@ -1,15 +1,18 @@
 import express from "express";
-import { cancelOrder, completeRefund, confirmPayment, createOrder, deliverOrder, failOrder, getAllOrders, getOrderStatus, getSingleOrder, getUserOrderHistory, hardDeleteOrder, restoreOrder, returnOrder, shipOrder, softDeleteOrder, updateOrder } from "./orders.controllers.js";
+import { cancelOrder, completeRefund, confirmPayment, createOrder, deliverOrder, failOrder, getAllOrders, getOrderStatus, getSingleOrder, getUserOrderHistory, hardDeleteOrder, restoreOrder, returnOrder, shipOrder, softDeleteOrder, updateOrder, getUserTutorials, getUserChallenges } from "./orders.controllers.js";
 
 import validate from "../../middleware/validation.js";
-import { createOrderSchema, updateOrderSchema } from "./orders.validation.js";
-import { auth, authorization } from "../../middleware/auth.middleware.js";
+import { createOrderSchema,updateOrderSchema } from "./orders.validation.js";
+
+
 
 const router = express.Router();
 
 // User routes
 router.post("/create", auth, validate(createOrderSchema), createOrder);
 router.get("/history", auth, getUserOrderHistory);
+router.get("/tutorials", auth, getUserTutorials);
+router.get("/challenges", auth, getUserChallenges);
 router.get("/status/:id", auth, getOrderStatus);
 router.get("/get/:id", auth, getSingleOrder);
 router.patch("/cancel/:id", auth, cancelOrder);

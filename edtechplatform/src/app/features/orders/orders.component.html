@@ -1,0 +1,51 @@
+<div class="page-container container">
+  <div class="header-section">
+    <h2>My Orders</h2>
+    <p>Track your past purchases and their status.</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loader-container">
+    <div class="spinner"></div>
+    <p>Fetching your orders...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && error" class="alert-error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Content State -->
+  <div *ngIf="!isLoading && !error && orders.length > 0" class="content-grid">
+    <div class="card" *ngFor="let order of orders">
+      <div class="card-header">
+        <span class="order-id">Order #{{ order._id | slice:-6 }}</span>
+        <span class="status-badge" [ngClass]="order.status?.toLowerCase()">{{ order.status || 'Pending' }}</span>
+      </div>
+      <div class="card-body">
+        <p class="date">Placed on: {{ order.createdAt | date:'mediumDate' }}</p>
+        <div class="products-list">
+          <div class="product-item" *ngFor="let item of order.products">
+            <div class="product-info">
+              <strong>{{ item.product?.productName || 'Unknown Product' }}</strong>
+              <span>Qty: {{ item.quantity }}</span>
+            </div>
+            <span class="price">${{ item.price || 0 }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="total-label">Total</span>
+        <span class="total-price">${{ order.totalPrice }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && orders.length === 0" class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-bag"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+    <h3>No Orders Yet</h3>
+    <p>You haven't purchased anything yet. Head to the store to get started!</p>
+    <a routerLink="/store" class="btn-primary">Browse Store</a>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="page-container container">
+  <div class="header-section">
+    <h2>My Tutorials</h2>
+    <p>Watch and learn from your purchased course materials.</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loader-container">
+    <div class="spinner"></div>
+    <p>Loading your learning materials...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && error" class="alert-error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Content State -->
+  <div *ngIf="!isLoading && !error && tutorialsData.length > 0" class="courses-container">
+    <div class="course-section" *ngFor="let course of tutorialsData">
+      <h3 class="course-title">{{ course.productName }}</h3>
+      
+      <div class="content-grid">
+        <div class="tutorial-card" *ngFor="let tutorialUrl of course.tutorials; let i = index">
+          <a [href]="tutorialUrl" target="_blank">
+            <div class="video-thumbnail">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="play-icon"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+            </div>
+          </a>
+          <div class="tutorial-info">
+            <h4>Lesson {{ i + 1 }}</h4>
+            <a [href]="tutorialUrl" target="_blank" class="watch-btn">Watch Now</a>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && tutorialsData.length === 0" class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+    <h3>No Tutorials Available</h3>
+    <p>You don't have access to any tutorials yet. Purchase a course to start learning!</p>
+    <a routerLink="/store" class="btn-primary">Browse Courses</a>
+  </div>
+</div>

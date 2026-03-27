@@ -1,33 +1,42 @@
 import express from "express";
 import upload from "../../middleware/multer.upload.js";
-import { addChallenge, addTutorial, createProduct, deleteChallenge, deleteTutorial, getAllProducts, getChallengesByProduct, getSingleProduct, getTutorialsByProduct,
-     hardDeleteProduct, restoreProduct, softDeleteProduct,
-     updateChallenge, updateProduct, updateTutorial } from "./products.controllers.js";
+import { addChallenge, addTutorial, createProduct, deleteChallenge, 
+    deleteTutorial, getAllProducts, getChallengesByProduct, getChallengesForUser, 
+    getSingleProduct, getTutorialsByProduct, getTutorialsForUser, 
+    hardDeleteProduct, restoreProduct, softDeleteProduct, solveChallenge, updateChallenge, updateProduct, updateTutorial } from "./products.controllers.js";
 import validate from "../../middleware/validation.js";
-import { createProductSchema, updateProductSchema, addTutorialSchema, updateChallengeSchema, updateTutorialSchema, addChallengeSchema } from "./products.validation.js";
-import { auth, authorization } from "../../middleware/auth.middleware.js";
+
+import { createProductSchema,updateProductSchema,
+    addTutorialSchema ,updateChallengeSchema,
+updateTutorialSchema,addChallengeSchema
+} from "./products.validation.js";
 
 
 const router = express.Router();
 
 
-router.get("/getAll", getAllProducts);
-router.get("/get/:id", getSingleProduct);
-router.get("/getChallenges/:id", getChallengesByProduct);
-router.get("/getTutorials/:id", getTutorialsByProduct);
 
-// Admin-only management routes
-router.post("/create", auth, authorization(['admin']), upload.array("images", 5), validate(createProductSchema), createProduct);
-router.patch("/softDelete/:id", auth, authorization(['admin']), softDeleteProduct);
-router.patch("/update/:id", auth, authorization(['admin']), upload.array("images", 5), validate(updateProductSchema), updateProduct);
-router.delete("/hardDelete/:id", auth, authorization(['admin']), hardDeleteProduct);
-router.patch("/restore/:id", auth, authorization(['admin']), restoreProduct);
-router.post("/addTutorial/:id", auth, authorization(['admin']), validate(addTutorialSchema), addTutorial);
-router.put("/updateTutorial/:id/:index", auth, authorization(['admin']), validate(updateTutorialSchema), updateTutorial);
-router.delete("/deleteTutorial/:id/:index", auth, authorization(['admin']), deleteTutorial);
-router.post("/addChallenge/:id", auth, authorization(['admin']), validate(addChallengeSchema), addChallenge);
-router.patch("/updateChallenge/:id/:index", auth, authorization(['admin']), validate(updateChallengeSchema), updateChallenge);
-router.delete("/deleteChallenge/:id/:index", auth, authorization(['admin']), deleteChallenge);
 
+
+router.post("/api/createproducts",  upload.array("images", 5),validate(createProductSchema),createProduct);
+router.get("/api/getAllProducts", getAllProducts);
+router.get("/api/getProduct/:id", getSingleProduct);
+router.patch("/api/softDeleteProducts/:id",softDeleteProduct);
+router.patch("/api/restoreProducts/:id",restoreProduct);
+router.delete("/api/hardDeleteProducts/:id",hardDeleteProduct);
+
+router.patch("/api/updateProducts/:id", upload.array("images", 5),validate(updateProductSchema),updateProduct);
+router.post("/api/addTutorial/product/:id", validate(addTutorialSchema),addTutorial);
+router.patch("/api/updateTutorial/product/:id/:tutorialId",validate(updateTutorialSchema),updateTutorial);
+router.delete("/api/deleteTutorial/product/:id/:tutorialId", deleteTutorial);
+router.post("/api/addChallenge/product/:id", validate(addChallengeSchema),addChallenge);
+router.patch("/api/updateChallenge/:id/:challengeId", validate(updateChallengeSchema),updateChallenge);
+router.delete("/api/deleteChallenge/:id/:challengeId", deleteChallenge);
+router.post('/api/products/solvechallenges/:id/:challengeId', solveChallenge);
+router.get("/api/product/challenges/:id",getChallengesByProduct);
+
+router.get("/api/product/Tutorials/:id",getTutorialsByProduct);
+router.get("/api/userProductChallenges/:productId ", getChallengesForUser);
+router.get("/api/userProductTutorials/:productId ", getTutorialsForUser);
 export default router;
 
