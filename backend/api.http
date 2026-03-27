@@ -5,8 +5,8 @@
 # 2. Click "Send Request" above the URL
 # 3. For protected routes, replace the tokens below.
 
-@token = REPLACE_WITH_YOUR_USER_TOKEN
-@adminToken = REPLACE_WITH_YOUR_ADMIN_TOKEN
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzQ0YzI3ZDAzYzExOGY4OWZmMzNiNSIsImVtYWlsIjoidGVzdGVyMUBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzc0NDcyMjk4LCJleHAiOjE3NzUwNzcwOTh9.VU-mTdfvAw174hUeh5x54xrDLQDwITVbTjAm3xzrlyc
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzJmYWIxNGExNjYzYjM5YTRiY2YyMyIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzQ0Njk5MTYsImV4cCI6MTc3NTA3NDcxNn0.YryW_Z7fhCfixbqIdxefd9PcVD_2GgaGxd7pMVR7J04
 
 ### ==========================================
 ### 1. AUTHENTICATION MODULE
@@ -17,6 +17,11 @@ POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
+  //"username": "tester1",
+  //"email": "admin@example.com",
+  //"role": "admin",
+  //"password": "Password123!",
+  //"confirmationpassword": "Password123!"
   "username": "tester1",
   "email": "tester1@example.com",
   "password": "Password123!",
@@ -28,6 +33,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
+  //"email": "admin@example.com",
+  //"password": "Password123!"
   "email": "tester1@example.com",
   "password": "Password123!"
 }
@@ -45,7 +52,7 @@ GET {{baseUrl}}/product/getAll
 
 ### 2.2 Get Single Product (Public)
 # Replace :id with a valid product ID
-GET {{baseUrl}}/product/get/65f1234567890abcdef12345
+GET {{baseUrl}}/product/get/69c4437cd03c118f89ff33af
 
 ### 2.3 Create Product (Admin Only)
 # Note: For multipart/form-data (images), you'd normally use a tool like Postman. 
@@ -56,19 +63,19 @@ Content-Type: application/json
 
 {
   "productName": "Advanced JavaScript Course",
+  "category": "web",
   "price": 99.99,
   "stock": 100,
   "description": "Learn modern ES6+ features."
 }
 
 ### 2.4 Add Tutorial to Product (Admin Only)
-POST {{baseUrl}}/product/addTutorial/65f1234567890abcdef12345
+POST {{baseUrl}}/product/addTutorial/69c4437cd03c118f89ff33af
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "tutorialName": "Lesson 1: Closures",
-  "videoUrl": "http://example.com/video1.mp4"
+  "tutorial": "http://example.com/video1.mp4"
 }
 
 ### ==========================================
@@ -83,7 +90,7 @@ Content-Type: application/json
 {
   "products": [
     {
-      "product": "65f1234567890abcdef12345",
+      "product": "69c4437cd03c118f89ff33af",
       "quantity": 1
     }
   ],

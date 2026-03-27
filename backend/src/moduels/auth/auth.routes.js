@@ -6,8 +6,9 @@ import { auth, authorization } from "../../middleware/auth.middleware.js";
 
 const router=Router()
 
-router.post('/signup',validation(validators.signup),registrationServices.signup)
-router.post('/login',validation(validators.login),registrationServices.login)
+router.post('/signup', validation(validators.signupSchema), registrationServices.signup)
+router.post('/confirm-email', validation(validators.confirmEmailSchema), registrationServices.confirmEmail)
+router.post('/login', validation(validators.loginSchema), registrationServices.login)
 
 // Admin management routes
 router.get("/users", auth, authorization(['admin']), registrationServices.getUsers);

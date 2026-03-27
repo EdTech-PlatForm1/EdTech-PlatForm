@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: edtech
+
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    environment:
+      - DB_URI=mongodb://mongo:27017/edtech
+      - PORT=4000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./edtechplatform
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    volumes:
+      - ./edtechplatform:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:

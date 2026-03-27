@@ -1,0 +1,97 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>
+      <ng-container [ngSwitch]="activeTab">
+        <span *ngSwitchCase="'login'">Welcome Back</span>
+        <span *ngSwitchCase="'register'">Create Account</span>
+        <span *ngSwitchCase="'verify'">Verify Email</span>
+      </ng-container>
+    </h2>
+
+    <!-- Tabs -->
+    <div class="tab-buttons" *ngIf="activeTab !== 'verify'">
+      <button type="button"
+        (click)="setTab('login')"
+        [class.active]="activeTab === 'login'">
+        Sign In
+      </button>
+
+      <button type="button"
+        (click)="setTab('register')"
+        [class.active]="activeTab === 'register'">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="error" class="alert error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="message" class="alert success">
+      {{ message }}
+    </div>
+
+    <!-- Login -->
+    <form *ngIf="activeTab === 'login'"
+          (ngSubmit)="onLogin()"
+          [formGroup]="loginForm">
+
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="example@mail.com">
+
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="••••••••">
+
+      <button type="submit" [disabled]="loading || loginForm.invalid">
+        {{ loading ? '⏳ Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <!-- Register -->
+    <form *ngIf="activeTab === 'register'"
+          (ngSubmit)="onRegister()"
+          [formGroup]="registerForm">
+
+      <label>Username</label>
+      <input type="text" formControlName="username" placeholder="johndoe">
+
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="example@mail.com">
+
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="••••••••">
+
+      <label>Confirm Password</label>
+      <input type="password" formControlName="confirmPassword" placeholder="••••••••">
+
+      <button type="submit" [disabled]="loading || registerForm.invalid">
+        {{ loading ? '⏳ Creating...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <!-- Verify OTP -->
+    <form *ngIf="activeTab === 'verify'"
+          (ngSubmit)="onVerify()"
+          [formGroup]="otpForm">
+      
+      <p class="verify-text">
+        We've sent a 6-digit code to <strong>{{ pendingEmail }}</strong>. 
+        Please enter it below to confirm your account.
+      </p>
+
+      <label>Verification Code</label>
+      <input type="text" formControlName="otp" placeholder="123456" maxlength="6">
+
+      <button type="submit" [disabled]="loading || otpForm.invalid">
+        {{ loading ? '⏳ Verifying...' : 'Verify Code' }}
+      </button>
+
+      <button type="button" class="back-link" (click)="setTab('register')">
+        ← Back to sign up
+      </button>
+    </form>
+
+
+  </div>
+</div>

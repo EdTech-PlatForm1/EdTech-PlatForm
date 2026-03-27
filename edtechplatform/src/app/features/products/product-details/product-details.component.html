@@ -1,0 +1,76 @@
+<div class="product-details-container" *ngIf="product">
+  <div class="product-header">
+    <button class="back-btn" (click)="router.navigate(['/products'])">← Back to Products</button>
+    <h1>{{ product.productName }}</h1>
+  </div>
+
+  <div class="product-content">
+    <div class="product-gallery">
+      <div class="main-image">
+        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.productName" />
+      </div>
+      <div class="image-thumbnails" *ngIf="product.images.length > 1">
+        <img
+          *ngFor="let image of product.images; let i = index"
+          [src]="image"
+          [alt]="product.productName + ' ' + (i + 1)"
+          class="thumbnail"
+          [class.active]="i === 0"
+        />
+      </div>
+    </div>
+
+    <div class="product-summary">
+      <div class="price">${{ product.price }}</div>
+      <p class="description">{{ product.description }}</p>
+      <button class="buy-now-btn" (click)="onAddToCart()"> Add to Cart</button>
+    </div>
+  </div>
+
+  <div class="tabs-section">
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'info'"
+        (click)="setTab('info')"
+      >
+        Product Info
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'tutorials'"
+        (click)="setTab('tutorials')"
+      >
+        Tutorials ({{ product.tutorials.length }})
+      </button>
+    </div>
+
+    <div class="tab-content">
+      <div *ngIf="activeTab === 'info'" class="info-tab">
+        <h3>Product Details</h3>
+        <p>{{ product.description }}</p>
+        <div class="specs">
+          <p><strong>Price:</strong> ${{ product.price }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'tutorials'" class="tutorials-tab">
+        <h3>Tutorials</h3>
+        <div *ngIf="product.tutorials.length === 0" class="empty-state">
+          No tutorials available for this product.
+        </div>
+        <div class="tutorial-item" *ngFor="let tutorial of product.tutorials">
+          <h4>{{ tutorial.title }}</h4>
+          <p *ngIf="tutorial.duration">Duration: {{ tutorial.duration }} mins</p>
+          <a *ngIf="tutorial.videoUrl" [href]="tutorial.videoUrl" target="_blank" class="tutorial-link">
+            Watch Tutorial →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading">Loading product details...</div>
+<div *ngIf="error" class="alert error">{{ error }}</div>
