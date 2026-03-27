@@ -26,9 +26,9 @@
   <div class="second-navbar">
     <div class="container nav-links" *ngIf="!isAdminView">
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      <a href="#">My Orders</a>
-      <a href="#">Tutorials</a>
-      <a href="#">Challenges</a>
+      <a routerLink="/orders" routerLinkActive="active">My Orders</a>
+      <a routerLink="/tutorials" routerLinkActive="active">Tutorials</a>
+      <a routerLink="/challenges" routerLinkActive="active">Challenges</a>
       <a routerLink="/profile" routerLinkActive="active">Profile</a>
     </div>
     <div class="container nav-links" *ngIf="isAdminView">
