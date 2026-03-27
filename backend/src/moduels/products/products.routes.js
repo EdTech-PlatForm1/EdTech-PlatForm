@@ -9,7 +9,7 @@ import validate from "../../middleware/validation.js";
 import { createProductSchema,updateProductSchema,
     addTutorialSchema ,updateChallengeSchema,
 updateTutorialSchema,addChallengeSchema
-} from "../../validation/validation.js";
+} from "./products.validation.js";
 
 
 const router = express.Router();

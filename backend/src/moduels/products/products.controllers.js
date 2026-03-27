@@ -1,4 +1,4 @@
-import Product from "../products/products.schema.js";
+import Product from "./products.schema.js";
 import Order from "../orders/orders.schema.js";
 
 export const createProduct = async (req, res) => {

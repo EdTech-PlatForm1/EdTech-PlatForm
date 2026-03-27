@@ -4,7 +4,7 @@ import { cancelOrder, completeRefund, confirmPayment,
      getOrderStatus, getSingleOrder, getUserOrderHistory, hardDeleteOrder, markAsDeliveryarrived, markAsDeliveryFailed, restoreOrder, returnOrder, setShippingCost, shipOrder, softDeleteOrder, updateOrder } from "./orders.controllers.js";
 
 import validate from "../../middleware/validation.js";
-import { createOrderSchema,updateOrderSchema } from "../../validation/validation.js";
+import { createOrderSchema,updateOrderSchema } from "./orders.validation.js";
 
 
 
