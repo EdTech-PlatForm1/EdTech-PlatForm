@@ -1,21 +1,4 @@
 import Joi from "joi";
-export const addChallengeSchema = Joi.object({
-  id: Joi.string().required(),
-  challenge: Joi.string().min(3).required().messages({
-    "string.empty": "Challenge cannot be empty",
-    "string.min": "Challenge should have at least 3 characters",
-    "any.required": "Challenge is required"
-  })
-});
-
-export const addTutorialSchema = Joi.object({
-  id: Joi.string().required(),
-  tutorial: Joi.string().min(5).required().messages({
-    "string.empty": "Tutorial cannot be empty",
-    "string.min": "Tutorial should have at least 5 characters",
-    "any.required": "Tutorial is required"
-  })
-});
 
 export const createProductSchema = Joi.object({
   productName: Joi.string().min(3).max(100).required().trim().messages({
@@ -50,22 +33,6 @@ export const createProductSchema = Joi.object({
   }),
   images: Joi.array().items(Joi.string().uri()).optional()
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export const addChallengeSchema = Joi.object({
   question: Joi.string().min(3).required().messages({
@@ -103,7 +70,7 @@ export const updateChallengeSchema = Joi.object({
   correctAnswer: Joi.string().min(1).messages({
     "string.base": "Correct answer must be a string",
     "string.min": "Correct answer cannot be empty"
-  }),   
+  }),
 });
 
 
