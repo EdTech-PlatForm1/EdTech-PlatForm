@@ -1,4 +1,4 @@
-import Product from "../products/products.schema.js";
+import Product from "../DB/model/products.schema.js";
 import Order from "./orders.schema.js";
 import mongoose from "mongoose";
 export const createOrder = async (req, res) => {
