@@ -1,34 +1,43 @@
-<div class="create-order-container" *ngIf="product">
+<div class="create-order-container">
   <div class="order-header">
-    <button class="back-btn" (click)="router.navigate(['/products', product._id])">← Back to Product</button>
-    <h1>Create Order</h1>
+    <button class="back-btn" (click)="router.navigate(['/products/cart'])">← Back to Cart</button>
+    <h1>🏗️ Checkout</h1>
   </div>
 
   <div class="order-content">
     <div class="product-summary">
-      <div class="product-image">
-        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.name" />
+      <h3>Items Summary</h3>
+      <div *ngFor="let item of checkoutItems" class="checkout-item">
+        <div class="item-img">
+          <img [src]="item.product.images[0] || '/assets/placeholder.jpg'" [alt]="item.product.productName">
+        </div>
+        <div class="item-info">
+          <h4>{{ item.product.productName }}</h4>
+          <p>Quantity: {{ item.quantity }} x ${{ item.product.price }}</p>
+          <p class="subtotal">Subtotal: ${{ item.product.price * item.quantity }}</p>
+        </div>
       </div>
-      <div class="product-info">
-        <h3>{{ product.name }}</h3>
-        <p class="price">${{ product.price }}</p>
+      
+      <div class="order-total">
+        <div class="total-row">
+          <span>Subtotal:</span>
+          <span>${{ getTotalPrice() }}</span>
+        </div>
+        <div class="total-row">
+          <span>Shipping:</span>
+          <span>$0.00</span>
+        </div>
+        <div class="total-row total">
+          <span>Total:</span>
+          <span>${{ getTotalPrice() }}</span>
+        </div>
       </div>
     </div>
 
     <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="order-form">
+      <h3>Shipping & Payment</h3>
       <div *ngIf="error" class="alert error">{{ error }}</div>
       <div *ngIf="message" class="alert success">{{ message }}</div>
-
-      <div class="form-group">
-        <label for="quantity">Quantity</label>
-        <input
-          id="quantity"
-          type="number"
-          formControlName="quantity"
-          min="1"
-          placeholder="1"
-        />
-      </div>
 
       <div class="form-group">
         <label for="address">Delivery Address</label>
@@ -41,12 +50,12 @@
       </div>
 
       <div class="form-group">
-        <label for="phone">Phone Number</label>
+        <label for="phone">Phone Number (11 digits)</label>
         <input
           id="phone"
           type="tel"
           formControlName="phone"
-          placeholder="+1 (555) 123-4567"
+          placeholder="01234567890"
         />
       </div>
 
@@ -54,35 +63,19 @@
         <label for="payment">Payment Method</label>
         <select id="payment" formControlName="paymentMethod">
           <option value="card">Credit/Debit Card</option>
-          <option value="paypal">PayPal</option>
           <option value="cash">Cash on Delivery</option>
         </select>
       </div>
 
-      <div class="order-total">
-        <div class="total-row">
-          <span>Subtotal:</span>
-          <span>${{ product.price * (orderForm.value.quantity || 1) }}</span>
-        </div>
-        <div class="total-row">
-          <span>Shipping:</span>
-          <span>$5.00</span>
-        </div>
-        <div class="total-row total">
-          <span>Total:</span>
-          <span>${{ getTotalPrice() + 5 }}</span>
-        </div>
-      </div>
-
       <button
         type="submit"
-        [disabled]="loading || orderForm.invalid"
+        [disabled]="loading || orderForm.invalid || checkoutItems.length === 0"
         class="confirm-btn"
       >
-        {{ loading ? '⏳ Processing...' : '✅ Confirm Order' }}
+        {{ loading ? '⏳ Processing...' : '✅ Confirm Purchase' }}
       </button>
     </form>
   </div>
 </div>
 
-<div *ngIf="!product" class="loading">Loading...</div>
+<div *ngIf="loading && checkoutItems.length === 0" class="loading">Loading...</div>

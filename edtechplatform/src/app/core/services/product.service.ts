@@ -1,67 +1,56 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export interface Product {
   _id: string;
-  name: string;
+  productName: string;
   price: number;
   description: string;
   images: string[];
-  tutorials: Tutorial[];
-  challenges: Challenge[];
+  tutorials: any[];
+  challenges: any[];
   createdAt: string;
   updatedAt: string;
-}
-
-export interface Tutorial {
-  title: string;
-  description: string;
-  url?: string;
-}
-
-export interface Challenge {
-  title: string;
-  description: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  points: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private readonly endpoint = 'http://localhost:4004';
+  private readonly endpoint = 'http://localhost:4000/product';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.endpoint}/api/getAllProducts`).pipe(
+    return this.http.get<{ products?: Product[], getallProduct?: Product[] }>(`${this.endpoint}/getAll`).pipe(
+      map(res => res.products || res.getallProduct || []),
       catchError(this.handleError)
     );
   }
 
   getSingleProduct(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.endpoint}/api/getProduct/${id}`).pipe(
+    return this.http.get<{ product: Product }>(`${this.endpoint}/get/${id}`).pipe(
+      map(res => res.product),
       catchError(this.handleError)
     );
   }
 
   createProduct(formData: FormData): Observable<any> {
-    return this.http.post(`${this.endpoint}/api/createproducts`, formData).pipe(
+    return this.http.post(`${this.endpoint}/create`, formData).pipe(
       catchError(this.handleError)
     );
   }
 
   updateProduct(id: string, formData: FormData): Observable<any> {
-    return this.http.patch(`${this.endpoint}/api/updateProducts/${id}`, formData).pipe(
+    return this.http.patch(`${this.endpoint}/update/${id}`, formData).pipe(
       catchError(this.handleError)
     );
   }
 
   softDeleteProduct(id: string): Observable<any> {
-    return this.http.patch(`${this.endpoint}/api/softDeleteProducts/${id}`, {}).pipe(
+    return this.http.patch(`${this.endpoint}/softDelete/${id}`, {}).pipe(
       catchError(this.handleError)
     );
   }

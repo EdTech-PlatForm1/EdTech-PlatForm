@@ -1,4 +1,25 @@
 <div class="container text-center">
   <h2>User Profile Dashboard</h2>
-  <p>Coming soon...</p>
+  <div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="avatar">
+        {{ user?.email?.charAt(0)?.toUpperCase() || 'U' }}
+      </div>
+      <h2>{{ user?.name || user?.email || 'User Profile' }}</h2>
+      <p class="role">{{ user?.role || 'Student' }}</p>
+    </div>
+
+    <div class="profile-body">
+      <div class="info-group">
+        <label>Email Address</label>
+        <p>{{ user?.email }}</p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="logout-btn" (click)="logout()">🚪 Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>

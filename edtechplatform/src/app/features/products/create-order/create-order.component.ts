@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderService, Order, CreateOrderPayload } from '../../../core/services/order.service';
+import { OrderService, Order, CreateOrderPayload, OrderProduct } from '../../../core/services/order.service';
 import { ProductService, Product } from '../../../core/services/product.service';
+import { CartService, CartItem } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-create-order',
@@ -10,15 +11,15 @@ import { ProductService, Product } from '../../../core/services/product.service'
   styleUrls: ['./create-order.component.css']
 })
 export class CreateOrderComponent implements OnInit {
-  product: Product | null = null;
+  checkoutItems: CartItem[] = [];
   loading = false;
   error = '';
   message = '';
+  isSinglePurchase = false;
 
   orderForm = this.fb.group({
-    quantity: [1, [Validators.required, Validators.min(1)]],
     address: ['', [Validators.required, Validators.minLength(10)]],
-    phone: ['', [Validators.required, Validators.pattern(/^[\+]?[0-9\-\(\)\s]+$/)]],
+    phone: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
     paymentMethod: ['card', [Validators.required]]
   });
 
@@ -27,29 +28,39 @@ export class CreateOrderComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     private orderService: OrderService,
-    private productService: ProductService
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
-      this.loadProduct(productId);
+      this.isSinglePurchase = true;
+      this.loadSingleProduct(productId);
+    } else {
+      this.checkoutItems = this.cartService.getCartItems();
+      if (this.checkoutItems.length === 0) {
+        this.router.navigate(['/products/cart']);
+      }
     }
   }
 
-  loadProduct(id: string) {
+  loadSingleProduct(id: string) {
+    this.loading = true;
     this.productService.getSingleProduct(id).subscribe({
       next: (product: Product) => {
-        this.product = product;
+        this.checkoutItems = [{ product, quantity: 1 }];
+        this.loading = false;
       },
       error: (err: any) => {
         this.error = 'Failed to load product details.';
+        this.loading = false;
       }
     });
   }
 
   onSubmit() {
-    if (this.orderForm.invalid || !this.product) {
+    if (this.orderForm.invalid || this.checkoutItems.length === 0) {
       this.error = 'Please fill in all fields correctly.';
       return;
     }
@@ -58,9 +69,13 @@ export class CreateOrderComponent implements OnInit {
     this.error = '';
     this.message = '';
 
+    const products: OrderProduct[] = this.checkoutItems.map(item => ({
+      product: item.product._id,
+      quantity: item.quantity
+    }));
+
     const orderData: CreateOrderPayload = {
-      productId: this.product._id,
-      quantity: this.orderForm.value.quantity!,
+      products,
       address: this.orderForm.value.address!,
       phone: this.orderForm.value.phone!,
       paymentMethod: this.orderForm.value.paymentMethod!
@@ -70,6 +85,9 @@ export class CreateOrderComponent implements OnInit {
       next: (order: Order) => {
         this.message = 'Order created successfully!';
         this.loading = false;
+        if (!this.isSinglePurchase) {
+          this.cartService.clearCart();
+        }
         setTimeout(() => {
           this.router.navigate(['/orders']);
         }, 2000);
@@ -82,7 +100,6 @@ export class CreateOrderComponent implements OnInit {
   }
 
   getTotalPrice(): number {
-    if (!this.product) return 0;
-    return this.product.price * (this.orderForm.value.quantity || 1);
+    return this.checkoutItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   }
 }

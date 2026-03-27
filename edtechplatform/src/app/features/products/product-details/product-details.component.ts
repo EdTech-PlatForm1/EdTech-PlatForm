@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService, Product } from '../../../core/services/product.service';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -16,7 +17,8 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
@@ -45,9 +47,10 @@ export class ProductDetailsComponent implements OnInit {
     this.activeTab = tab;
   }
 
-  onBuyNow() {
+  onAddToCart() {
     if (this.product) {
-      this.router.navigate(['/products', this.product._id, 'order']);
+      this.cartService.addToCart(this.product);
+      this.router.navigate(['/products/cart']);
     }
   }
 }

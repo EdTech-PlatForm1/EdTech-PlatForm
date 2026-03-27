@@ -4,28 +4,29 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 export interface AuthPayload {
-  name?: string;
+  username?: string;
   email: string;
   password?: string;
+  confirmationpassword?: string;
 }
 
 export interface AuthResponse {
   message: string;
   accessToken?: string;
   refreshToken?: string;
-  user?: { name: string; email: string; role?: string };
+  user?: { username?: string; email?: string; role?: string };
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly endpoint = 'http://localhost:4004/auth';
-  private user: AuthResponse['user'] | null = null;
+  private readonly endpoint = 'http://localhost:4000/auth';
+  private user: { username?: string; email?: string; role?: string } | null = null;
 
   constructor(private http: HttpClient) {
     if (typeof localStorage !== 'undefined') {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('accessToken');
       const userJson = localStorage.getItem('auth_user');
       if (token && userJson) {
         this.user = JSON.parse(userJson);
@@ -36,15 +37,12 @@ export class AuthService {
   login(payload: AuthPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.endpoint}/login`, payload).pipe(
       tap((res) => {
-        if (res.accessToken) {
+        if (res.accessToken && res.user) {
           if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('auth_token', res.accessToken);
-            // Assuming user info is not sent, or we can decode from token
-            // For now, set a basic user object
-            const user = { name: payload.email, email: payload.email };
-            localStorage.setItem('auth_user', JSON.stringify(user));
+            localStorage.setItem('accessToken', res.accessToken);
+            localStorage.setItem('auth_user', JSON.stringify(res.user));
           }
-          this.user = { name: payload.email, email: payload.email };
+          this.user = res.user;
         }
       }),
       catchError(this.handleError)
@@ -53,16 +51,23 @@ export class AuthService {
 
   register(payload: AuthPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.endpoint}/signup`, {
-      username: payload.name,
+      username: payload.username,
       email: payload.email,
-      password: payload.password
+      password: payload.password,
+      confirmationpassword: payload.confirmationpassword
     }).pipe(
       tap((res) => {
         if (res.user) {
           // After signup, user might need to login
-          this.user = { name: res.user.name, email: res.user.email };
+          this.user = { email: res.user.email };
         }
       }),
+      catchError(this.handleError)
+    );
+  }
+
+  confirmEmail(email: string, otp: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.endpoint}/confirm-email`, { email, otp }).pipe(
       catchError(this.handleError)
     );
   }
@@ -70,7 +75,7 @@ export class AuthService {
 
   logout(): void {
     if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('auth_token');
+      localStorage.removeItem('accessToken');
       localStorage.removeItem('auth_user');
     }
     this.user = null;
@@ -80,11 +85,15 @@ export class AuthService {
     if (typeof localStorage === 'undefined') {
       return false;
     }
-    return !!localStorage.getItem('auth_token');
+    return !!localStorage.getItem('accessToken');
+  }
+
+  isAdmin(): boolean {
+    return this.user?.role === 'admin';
   }
 
   getUser() {
-    return this.user || { name: 'Guest', email: '' };
+    return this.user || { username: 'Guest', email: '' };
   }
 
   private handleError(error: HttpErrorResponse) {

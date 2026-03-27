@@ -1,5 +1,5 @@
 <div class="products-container">
-  <h1>🛍️ Our Products</h1>
+  <h1> Our Products</h1>
 
   <div *ngIf="error" class="alert error">{{ error }}</div>
 
@@ -8,10 +8,10 @@
   <div class="products-grid" *ngIf="!loading && !error">
     <div class="product-card" *ngFor="let product of products">
       <div class="product-image">
-        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.name" />
+        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.productName" />
       </div>
       <div class="product-info">
-        <h3>{{ product.name }}</h3>
+        <h3>{{ product.productName }}</h3>
         <p class="price">${{ product.price }}</p>
         <button class="view-details-btn" [routerLink]="['/products', product._id]">
           View Details

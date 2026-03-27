@@ -18,9 +18,13 @@ export interface Order {
   updatedAt: string;
 }
 
-export interface CreateOrderPayload {
-  productId: string;
+export interface OrderProduct {
+  product: string;
   quantity: number;
+}
+
+export interface CreateOrderPayload {
+  products: OrderProduct[];
   address: string;
   phone: string;
   paymentMethod: string;
@@ -30,42 +34,53 @@ export interface CreateOrderPayload {
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly endpoint = 'http://localhost:4004';
+  private readonly endpoint = 'http://localhost:4000/order';
 
   constructor(private http: HttpClient) {}
 
   createOrder(orderData: CreateOrderPayload): Observable<Order> {
-    return this.http.post<Order>(`${this.endpoint}/api/createorders`, orderData).pipe(
+    const payload = {
+      products: orderData.products,
+      address: { 
+        street: orderData.address, 
+        city: 'Not specified', 
+        country: 'Not specified',
+        phone: orderData.phone
+      },
+      paymentMethod: orderData.paymentMethod
+    };
+    const headers = { Authorization: 'Bearer ' + (typeof localStorage !== 'undefined' ? localStorage.getItem('accessToken') : '') };
+    return this.http.post<Order>(`${this.endpoint}/create`, payload, { headers }).pipe(
       catchError(this.handleError)
     );
   }
 
   getUserOrderHistory(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.endpoint}/api/historyOrder`).pipe(
+    return this.http.get<Order[]>(`${this.endpoint}/history`).pipe(
       catchError(this.handleError)
     );
   }
 
   getAllOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.endpoint}/api/getAllOrders`).pipe(
+    return this.http.get<Order[]>(`${this.endpoint}/getAll`).pipe(
       catchError(this.handleError)
     );
   }
 
   getSingleOrder(id: string): Observable<Order> {
-    return this.http.get<Order>(`${this.endpoint}/api/getsingleOrder/${id}`).pipe(
+    return this.http.get<Order>(`${this.endpoint}/get/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
   updateOrder(id: string, updateData: Partial<Order>): Observable<Order> {
-    return this.http.patch<Order>(`${this.endpoint}/api/update-order/${id}`, updateData).pipe(
+    return this.http.patch<Order>(`${this.endpoint}/update/${id}`, updateData).pipe(
       catchError(this.handleError)
     );
   }
 
   cancelOrder(id: string): Observable<any> {
-    return this.http.patch(`${this.endpoint}/api/cancelOrder/${id}`, {}).pipe(
+    return this.http.patch(`${this.endpoint}/cancel/${id}`, {}).pipe(
       catchError(this.handleError)
     );
   }

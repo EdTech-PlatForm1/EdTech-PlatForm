@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
-type AuthTab = 'login' | 'register';
+type AuthTab = 'login' | 'register' | 'verify';
 
 @Component({
   selector: 'app-auth',
@@ -27,7 +28,18 @@ export class AuthComponent {
     confirmPassword: ['', [Validators.required]]
   });
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {}
+  otpForm = this.fb.group({
+    otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
+  });
+
+  pendingEmail = '';
+
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   setTab(tab: AuthTab) {
     this.activeTab = tab;
@@ -53,6 +65,8 @@ export class AuthComponent {
       next: (res) => {
         this.message = res.message || 'Login successful!';
         this.loading = false;
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/store';
+        this.router.navigateByUrl(returnUrl);
       },
       error: (err) => {
         this.error = err?.message || 'Login failed. Please try again.';
@@ -79,13 +93,16 @@ export class AuthComponent {
 
     const { username, email } = this.registerForm.value;
     this.authService.register({
-      name: username!,
+      username: username!,
       email: email!,
-      password: password!
+      password: password!,
+      confirmationpassword: confirmPassword!
     }).subscribe({
       next: (res) => {
-        this.message = res.message || 'Account created successfully!';
+        this.message = 'Verification code sent to your email. Please enter it below.';
         this.loading = false;
+        this.pendingEmail = email!;
+        this.setTab('verify');
       },
       error: (err) => {
         this.error = err?.message || 'Account creation failed.';
@@ -94,4 +111,27 @@ export class AuthComponent {
     });
   }
 
+  onVerify() {
+    if (this.otpForm.invalid) {
+      this.error = 'Please enter the 6-digit code correctly.';
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
+    this.message = '';
+
+    const { otp } = this.otpForm.value;
+    this.authService.confirmEmail(this.pendingEmail, otp!).subscribe({
+      next: (res) => {
+        this.message = 'Email confirmed! You can now login.';
+        this.loading = false;
+        this.setTab('login');
+      },
+      error: (err) => {
+        this.error = err?.message || 'Verification failed.';
+        this.loading = false;
+      }
+    });
+  }
 }

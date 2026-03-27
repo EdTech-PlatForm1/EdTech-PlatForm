@@ -1,19 +1,19 @@
 <div class="product-details-container" *ngIf="product">
   <div class="product-header">
     <button class="back-btn" (click)="router.navigate(['/products'])">← Back to Products</button>
-    <h1>{{ product.name }}</h1>
+    <h1>{{ product.productName }}</h1>
   </div>
 
   <div class="product-content">
     <div class="product-gallery">
       <div class="main-image">
-        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.name" />
+        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.productName" />
       </div>
       <div class="image-thumbnails" *ngIf="product.images.length > 1">
         <img
           *ngFor="let image of product.images; let i = index"
           [src]="image"
-          [alt]="product.name + ' ' + (i + 1)"
+          [alt]="product.productName + ' ' + (i + 1)"
           class="thumbnail"
           [class.active]="i === 0"
         />
@@ -23,7 +23,7 @@
     <div class="product-summary">
       <div class="price">${{ product.price }}</div>
       <p class="description">{{ product.description }}</p>
-      <button class="buy-now-btn" (click)="onBuyNow()">👉 Buy Now</button>
+      <button class="buy-now-btn" (click)="onAddToCart()"> Add to Cart</button>
     </div>
   </div>
 
@@ -43,13 +43,6 @@
       >
         Tutorials ({{ product.tutorials.length }})
       </button>
-      <button
-        class="tab-btn"
-        [class.active]="activeTab === 'challenges'"
-        (click)="setTab('challenges')"
-      >
-        Challenges ({{ product.challenges.length }})
-      </button>
     </div>
 
     <div class="tab-content">
@@ -58,8 +51,6 @@
         <p>{{ product.description }}</p>
         <div class="specs">
           <p><strong>Price:</strong> ${{ product.price }}</p>
-          <p><strong>Created:</strong> {{ product.createdAt | date:'medium' }}</p>
-          <p><strong>Last Updated:</strong> {{ product.updatedAt | date:'medium' }}</p>
         </div>
       </div>
 
@@ -70,29 +61,13 @@
         </div>
         <div class="tutorial-item" *ngFor="let tutorial of product.tutorials">
           <h4>{{ tutorial.title }}</h4>
-          <p>{{ tutorial.description }}</p>
-          <a *ngIf="tutorial.url" [href]="tutorial.url" target="_blank" class="tutorial-link">
+          <p *ngIf="tutorial.duration">Duration: {{ tutorial.duration }} mins</p>
+          <a *ngIf="tutorial.videoUrl" [href]="tutorial.videoUrl" target="_blank" class="tutorial-link">
             Watch Tutorial →
           </a>
         </div>
       </div>
 
-      <div *ngIf="activeTab === 'challenges'" class="challenges-tab">
-        <h3>Challenges</h3>
-        <div *ngIf="product.challenges.length === 0" class="empty-state">
-          No challenges available for this product.
-        </div>
-        <div class="challenge-item" *ngFor="let challenge of product.challenges">
-          <div class="challenge-header">
-            <h4>{{ challenge.title }}</h4>
-            <span class="difficulty" [class]="challenge.difficulty">
-              {{ challenge.difficulty }}
-            </span>
-          </div>
-          <p>{{ challenge.description }}</p>
-          <div class="points">Points: {{ challenge.points }}</div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
