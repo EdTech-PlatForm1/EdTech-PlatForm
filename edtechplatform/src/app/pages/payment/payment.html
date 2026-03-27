@@ -1,0 +1,8 @@
+<h2>Payment</h2>
+
+<input [(ngModel)]="form.amount" placeholder="Amount">
+<input [(ngModel)]="form.cardNumber" placeholder="Card Number">
+<input [(ngModel)]="form.expiry" placeholder="MM/YY">
+<input [(ngModel)]="form.cvv" placeholder="CVV">
+
+<button (click)="pay()">Pay Now</button>

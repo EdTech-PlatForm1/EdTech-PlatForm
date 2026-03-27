@@ -1,0 +1,51 @@
+.container {
+  width: 60%;
+  margin: auto;
+  font-family: Arial;
+}
+
+h2 {
+  text-align: center;
+}
+
+.form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, select, textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.review-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background: #f9f9f9;
+}
+
+.rating {
+  font-weight: bold;
+  color: orange;
+}
+
+.comment {
+  margin: 10px 0;
+}
