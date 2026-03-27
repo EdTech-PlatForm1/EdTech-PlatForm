@@ -550,7 +550,7 @@ export const getUserTutorials = async (req, res) => {
   try {
     const userId = req.userID;
 
-    const orders = await Order.find({ user: userId, isDeleted: false })
+    const orders = await Order.find({ user: userId, status: "delivered", isDeleted: false })
       .populate("products.product", "productName tutorials");
 
     if (!orders.length) {
@@ -576,6 +576,43 @@ export const getUserTutorials = async (req, res) => {
     res.status(200).json({
       message: "User tutorials fetched successfully",
       tutorials
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getUserChallenges = async (req, res) => {
+  try {
+    const userId = req.userID;
+
+    const orders = await Order.find({ user: userId, isDeleted: false })
+      .populate("products.product", "productName challenges");
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    const challenges = [];
+    orders.forEach(order => {
+      order.products.forEach(item => {
+        if (item.product && item.product.challenges && item.product.challenges.length > 0) {
+          challenges.push({
+            productName: item.product.productName,
+            challenges: item.product.challenges
+          });
+        }
+      });
+    });
+
+    if (challenges.length === 0) {
+      return res.status(404).json({ message: "No challenges available for purchased products" });
+    }
+
+    res.status(200).json({
+      message: "User challenges fetched successfully",
+      challenges
     });
 
   } catch (error) {

@@ -1,5 +1,6 @@
 import Joi from "joi";
 export const addChallengeSchema = Joi.object({
+  id: Joi.string().required(),
   challenge: Joi.string().min(3).required().messages({
     "string.empty": "Challenge cannot be empty",
     "string.min": "Challenge should have at least 3 characters",
@@ -8,6 +9,7 @@ export const addChallengeSchema = Joi.object({
 });
 
 export const addTutorialSchema = Joi.object({
+  id: Joi.string().required(),
   tutorial: Joi.string().min(5).required().messages({
     "string.empty": "Tutorial cannot be empty",
     "string.min": "Tutorial should have at least 5 characters",
@@ -76,6 +78,7 @@ export const createProductSchema = Joi.object({
 });
 
 export const updateChallengeSchema = Joi.object({
+  id: Joi.string().required(),
   challenge: Joi.string().min(3).required().messages({
     "string.empty": "Challenge cannot be empty",
     "string.min": "Challenge should have at least 3 characters",
@@ -89,6 +92,7 @@ export const updateChallengeSchema = Joi.object({
 });
 
 export const updateProductSchema = Joi.object({
+  id: Joi.string().required(),
   productName: Joi.string()
     .trim()
     .min(3)
@@ -125,7 +129,6 @@ export const updateProductSchema = Joi.object({
     }),
 
   category: Joi.string()
-
 ,
   stock: Joi.number()
     .integer()
@@ -139,6 +142,8 @@ export const updateProductSchema = Joi.object({
 });
 
 export const updateTutorialSchema = Joi.object({
+  id: Joi.string().required(),
+  index: Joi.number().min(0),
   tutorial: Joi.string().min(5).required().messages({
     "string.empty": "Tutorial cannot be empty",
     "string.min": "Tutorial should have at least 5 characters",
