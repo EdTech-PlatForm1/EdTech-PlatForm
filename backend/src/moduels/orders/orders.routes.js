@@ -2,8 +2,9 @@ import express from "express";
 import { cancelOrder, completeRefund, confirmPayment, createOrder, deliverOrder, failOrder, getAllOrders, getOrderStatus, getSingleOrder, getUserOrderHistory, hardDeleteOrder, restoreOrder, returnOrder, shipOrder, softDeleteOrder, updateOrder, getUserTutorials, getUserChallenges } from "./orders.controllers.js";
 
 import validate from "../../middleware/validation.js";
-import { createOrderSchema, updateOrderSchema } from "./orders.validation.js";
-import { auth, authorization } from "../../middleware/auth.middleware.js";
+import { createOrderSchema,updateOrderSchema } from "./orders.validation.js";
+
+
 
 const router = express.Router();
 
