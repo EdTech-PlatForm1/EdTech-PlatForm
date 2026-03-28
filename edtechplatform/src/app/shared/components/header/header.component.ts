@@ -1,16 +1,22 @@
 import { Component } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, RouterModule]
 })
 export class HeaderComponent {
   isAdminView = false;
+  cartCount$ = this.cartService.cartItems$.pipe(
+    map(items => items.reduce((acc, item) => acc + item.quantity, 0))
+  );
 
   constructor(
     private router: Router, 
@@ -26,10 +32,6 @@ export class HeaderComponent {
 
   isLoggedIn(): boolean {
     return this.authService.isAuthenticated();
-  }
-
-  getCartCount(): number {
-    return this.cartService.getCartCount();
   }
 
   isAdmin(): boolean {

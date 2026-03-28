@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserDataService {
-  private apiUrl = 'http://localhost:4000/order';
+  private apiUrl = 'http://localhost:5001/order';
   private http = inject(HttpClient);
 
   constructor() { }

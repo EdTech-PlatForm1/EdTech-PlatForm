@@ -11,7 +11,7 @@ export const addreview =async(req,res,next)=>{
   }
 }
 export const getaallreview=async(req,res,next)=>{
-  let allreviews = await review.find()
+  let allreviews = await review.find().populate('userId', 'username');
     res.status(201).json({message:"reviews gets successfly",allreviews})
 }
 export const getsinglereview=async(req,res,next)=>{

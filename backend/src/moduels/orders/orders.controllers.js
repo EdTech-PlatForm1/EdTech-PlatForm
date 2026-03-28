@@ -688,17 +688,20 @@ export const getUserTutorials = async (req, res) => {
   try {
     const userId = req.userID;
 
-    const orders = await Order.find({ user: userId, status: "delivered", isDeleted: false })
-      .populate("products.product", "productName tutorials");
+    const orders = await Order.find({ 
+      user: userId, 
+      status: { $in: ["paid", "shipped", "delivered"] }, 
+      isDeleted: false 
+    }).populate("products.product", "productName tutorials");
 
-    if (!orders.length) {
-      return res.status(404).json({ message: "No orders found for this user" });
+    if (!orders || orders.length === 0) {
+      return res.status(200).json({ message: "No tutorials found", tutorials: [] });
     }
 
     const tutorials = [];
     orders.forEach(order => {
       order.products.forEach(item => {
-        if (item.product.tutorials && item.product.tutorials.length > 0) {
+        if (item.product && item.product.tutorials && item.product.tutorials.length > 0) {
           tutorials.push({
             productName: item.product.productName,
             tutorials: item.product.tutorials
@@ -706,10 +709,6 @@ export const getUserTutorials = async (req, res) => {
         }
       });
     });
-
-    if (tutorials.length === 0) {
-      return res.status(404).json({ message: "No tutorials available for purchased products" });
-    }
 
     res.status(200).json({
       message: "User tutorials fetched successfully",
@@ -725,11 +724,14 @@ export const getUserChallenges = async (req, res) => {
   try {
     const userId = req.userID;
 
-    const orders = await Order.find({ user: userId, status: "delivered", isDeleted: false })
-      .populate("products.product", "productName challenges");
+    const orders = await Order.find({ 
+      user: userId, 
+      status: { $in: ["paid", "shipped", "delivered"] }, 
+      isDeleted: false 
+    }).populate("products.product", "productName challenges");
 
-    if (!orders.length) {
-      return res.status(404).json({ message: "No orders found for this user" });
+    if (!orders || orders.length === 0) {
+      return res.status(200).json({ message: "No challenges found", challenges: [] });
     }
 
     const challenges = [];
@@ -743,10 +745,6 @@ export const getUserChallenges = async (req, res) => {
         }
       });
     });
-
-    if (challenges.length === 0) {
-      return res.status(404).json({ message: "No challenges available for purchased products" });
-    }
 
     res.status(200).json({
       message: "User challenges fetched successfully",

@@ -11,5 +11,6 @@ export const routes: Routes = [
   { path: 'tutorials', canActivate: [AuthGuard], loadChildren: () => import('./features/tutorials/tutorials.module').then(m => m.TutorialsModule) },
   { path: 'challenges', canActivate: [AuthGuard], loadChildren: () => import('./features/challenges/challenges.module').then(m => m.ChallengesModule) },
   { path: 'profile', canActivate: [AuthGuard], loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule) },
+  { path: 'wishlist', canActivate: [AuthGuard], loadComponent: () => import('./features/wishlist/wishlist.component').then(m => m.WishlistComponent) },
   { path: 'admin', canActivate: [AuthGuard], loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule) }
 ];

@@ -21,7 +21,7 @@ export interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly endpoint = 'http://localhost:4000/auth';
+  private readonly endpoint = 'http://localhost:5001/auth';
   private user: { username?: string; email?: string; role?: string } | null = null;
 
   constructor(private http: HttpClient) {
@@ -94,6 +94,31 @@ export class AuthService {
 
   getUser() {
     return this.user || { username: 'Guest', email: '' };
+  }
+
+  // Admin User Management
+  getUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.endpoint}/users`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUserById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.endpoint}/users/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateUser(id: string, userData: any): Observable<any> {
+    return this.http.put<any>(`${this.endpoint}/users/${id}`, userData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.endpoint}/users/${id}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   private handleError(error: HttpErrorResponse) {

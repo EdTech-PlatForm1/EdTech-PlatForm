@@ -1,0 +1,46 @@
+<div class="manage-content container">
+  <div class="header">
+    <button (click)="goBack()">← Go back to products</button>
+    <h1>Manage Content for: {{ product?.productName }}</h1>
+  </div>
+
+  <div class="tabs">
+    <button [class.active]="activeSection === 'tutorials'" (click)="activeSection = 'tutorials'">Tutorials</button>
+    <button [class.active]="activeSection === 'challenges'" (click)="activeSection = 'challenges'">Challenges</button>
+  </div>
+
+  <!-- TUTORIALS -->
+  <div *ngIf="activeSection === 'tutorials'" class="section">
+    <h3>Add New Tutorial</h3>
+    <form (submit)="onAddTutorial(); $event.preventDefault()" class="content-form">
+      <input type="text" [(ngModel)]="tutorialForm.title" name="title" placeholder="Title" required>
+      <input type="text" [(ngModel)]="tutorialForm.videoUrl" name="videoUrl" placeholder="Video URL" required>
+      <input type="number" [(ngModel)]="tutorialForm.duration" name="duration" placeholder="Duration (mins)">
+      <button type="submit" [disabled]="!tutorialForm.title || !tutorialForm.videoUrl">Add Tutorial</button>
+    </form>
+
+    <div class="list">
+       <div *ngFor="let t of product?.tutorials" class="item">
+           <span>{{ t.title }} ({{ t.duration }}m)</span>
+           <button class="del-btn" (click)="onDeleteTutorial(t._id)">🗑️</button>
+       </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGES -->
+  <div *ngIf="activeSection === 'challenges'" class="section">
+    <h3>Add New Challenge</h3>
+    <form (submit)="onAddChallenge(); $event.preventDefault()" class="content-form">
+      <input type="text" [(ngModel)]="challengeForm.question" name="question" placeholder="Question" required>
+      <input type="text" [(ngModel)]="challengeForm.correctAnswer" name="answer" placeholder="Correct Answer" required>
+      <button type="submit" [disabled]="!challengeForm.question || !challengeForm.correctAnswer">Add Challenge</button>
+    </form>
+
+    <div class="list">
+       <div *ngFor="let c of product?.challenges" class="item">
+           <span>{{ c.question }} (Correct: {{ c.correctAnswer }})</span>
+           <button class="del-btn" (click)="onDeleteChallenge(c._id)">🗑️</button>
+       </div>
+    </div>
+  </div>
+</div>

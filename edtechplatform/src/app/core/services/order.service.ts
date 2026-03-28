@@ -1,17 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export interface Order {
   _id: string;
   userId: string;
-  productId: string;
-  quantity: number;
-  address: string;
+  products: {
+    product: {
+      _id: string;
+      productName: string;
+      images?: string[];
+    };
+    quantity: number;
+    price: number;
+  }[];
+  address: {
+    street: string;
+    city: string;
+    country: string;
+    phone: string;
+  };
   phone: string;
   paymentMethod: string;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
+  status: 'pending' | 'paid' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
   totalPrice: number;
   shippingCost?: number;
   createdAt: string;
@@ -34,7 +46,7 @@ export interface CreateOrderPayload {
   providedIn: 'root'
 })
 export class OrderService {
-  private readonly endpoint = 'http://localhost:4000/order';
+  private readonly endpoint = 'http://localhost:5001/order';
 
   constructor(private http: HttpClient) {}
 
@@ -56,13 +68,15 @@ export class OrderService {
   }
 
   getUserOrderHistory(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.endpoint}/history`).pipe(
+    return this.http.get<any>(`${this.endpoint}/history`).pipe(
+      map((res: any) => res.orders || []),
       catchError(this.handleError)
     );
   }
 
   getAllOrders(): Observable<Order[]> {
-    return this.http.get<Order[]>(`${this.endpoint}/getAll`).pipe(
+    return this.http.get<any>(`${this.endpoint}/getAll`).pipe(
+      map((res: any) => res.orders || []),
       catchError(this.handleError)
     );
   }
@@ -81,6 +95,79 @@ export class OrderService {
 
   cancelOrder(id: string): Observable<any> {
     return this.http.patch(`${this.endpoint}/cancel/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  returnOrder(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/return/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUserTutorials(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.endpoint}/tutorials`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getUserChallenges(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.endpoint}/challenges`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getOrderStatus(id: string): Observable<any> {
+    return this.http.get<any>(`${this.endpoint}/status/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Admin Order Management
+  confirmPayment(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/confirm-payment/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  shipOrder(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/ship/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  markAsDelivered(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/deliver/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  softDeleteOrder(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/soft-delete/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  hardDeleteOrder(id: string): Observable<any> {
+    return this.http.delete(`${this.endpoint}/hard-delete/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  restoreOrder(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/restore/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  failOrder(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/fail/${id}`, {}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  completeRefund(id: string): Observable<any> {
+    return this.http.patch(`${this.endpoint}/complete-refund/${id}`, {}).pipe(
       catchError(this.handleError)
     );
   }

@@ -21,15 +21,15 @@
       <h3 class="course-title">{{ course.productName }}</h3>
       
       <div class="content-grid">
-        <div class="tutorial-card" *ngFor="let tutorialUrl of course.tutorials; let i = index">
-          <a [href]="tutorialUrl" target="_blank">
+        <div class="tutorial-card" *ngFor="let tutorial of course.tutorials; let i = index">
+          <a [href]="tutorial.videoUrl" target="_blank">
             <div class="video-thumbnail">
               <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="play-icon"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
             </div>
           </a>
           <div class="tutorial-info">
-            <h4>Lesson {{ i + 1 }}</h4>
-            <a [href]="tutorialUrl" target="_blank" class="watch-btn">Watch Now</a>
+            <h4>{{ tutorial.title || 'Lesson ' + (i + 1) }}</h4>
+            <a [href]="tutorial.videoUrl" target="_blank" class="watch-btn">Watch Now</a>
           </div>
         </div>
       </div>

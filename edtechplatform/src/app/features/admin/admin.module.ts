@@ -1,33 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AdminRoutingModule } from './admin-routing.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AdminOrdersComponent } from './components/orders/orders.component';
 import { ProductsComponent } from './components/products/products.component';
 import { UsersComponent } from './components/users/users.component';
-import { ProfileComponent } from './components/profile/profile.component';
-
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-test',
-  template: 'test',
-  standalone: false
-})
-export class TestComponent {}
+import { ManageContentComponent } from './components/manage-content/manage-content.component';
+import { CreateProductComponent } from './components/create-product/create-product.component';
+import { EditProductComponent } from './components/edit-product/edit-product.component';
 
 @NgModule({
   declarations: [
-    TestComponent,
     ProductsComponent,
     DashboardComponent,
     AdminOrdersComponent,
     UsersComponent,
-    ProfileComponent
+    ManageContentComponent,
+    CreateProductComponent,
+    EditProductComponent
   ],
   imports: [
     CommonModule,
-    AdminRoutingModule
+    AdminRoutingModule,
+    FormsModule
   ]
 })
 export class AdminModule { }

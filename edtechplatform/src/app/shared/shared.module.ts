@@ -4,8 +4,8 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
-  declarations: [HeaderComponent],
-  imports: [CommonModule, RouterModule],
+  declarations: [],
+  imports: [CommonModule, RouterModule, HeaderComponent],
   exports: [CommonModule, RouterModule, HeaderComponent]
 })
 export class SharedModule {}

@@ -60,6 +60,7 @@
   text-transform: capitalize;
 }
 .status-badge.pending { background: #fef3c7; color: #92400e; }
+.status-badge.paid { background: #d1fae5; color: #065f46; }  /* Green like delivered */
 .status-badge.confirmed { background: #e0e7ff; color: #3730a3; }
 .status-badge.shipped { background: #dbeafe; color: #1e40af; }
 .status-badge.delivered { background: #d1fae5; color: #065f46; }
@@ -184,3 +185,30 @@
   border-radius: 8px;
   border-left: 4px solid #ef4444;
 }
+
+.shipping-info {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  color: #6b7280;
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 12px;
+}
+.shipping-info p { margin-bottom: 5px; }
+.shipping-info strong { color: #4b5563; }
+
+.order-actions {
+  padding: 10px 20px 20px;
+}
+
+.cancel-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1.5px solid #ef4444;
+  color: #ef4444;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.cancel-btn:hover { background: #fef2f2; }

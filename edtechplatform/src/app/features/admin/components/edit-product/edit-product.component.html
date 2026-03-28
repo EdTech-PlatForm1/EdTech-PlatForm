@@ -1,0 +1,60 @@
+<div class="edit-product container">
+  <div class="header">
+    <button (click)="goBack()">← Back to products</button>
+    <h1>Edit Product: {{ productData.productName }}</h1>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading product data...</div>
+
+  <form *ngIf="!loading" (submit)="onSubmit(); $event.preventDefault()" class="product-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" [(ngModel)]="productData.productName" name="productName" placeholder="Enter product name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" [(ngModel)]="productData.category" name="category" placeholder="e.g. Robotics, Physics" required>
+      </div>
+
+      <div class="form-group">
+        <label>Price ($)</label>
+        <input type="number" [(ngModel)]="productData.price" name="price" placeholder="0.00" required>
+      </div>
+
+      <div class="form-group">
+        <label>Discount (%)</label>
+        <input type="number" [(ngModel)]="productData.discount" name="discount" placeholder="0%">
+      </div>
+
+      <div class="form-group">
+        <label>Stock Quantity</label>
+        <input type="number" [(ngModel)]="productData.stock" name="stock" placeholder="0" required>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Description</label>
+        <textarea [(ngModel)]="productData.description" name="description" placeholder="Product description..." required></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Current Images</label>
+        <div class="image-previews">
+           <img *ngFor="let img of currentImages" [src]="img" class="thumb">
+        </div>
+        <label class="mt-20">Add New Images</label>
+        <input type="file" multiple (change)="onFileChange($event)" class="file-input">
+        <p class="file-hint">Note: Uploading new images will replace existing ones (backend behavior).</p>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="submit-btn" [disabled]="loading || !productData.productName || !productData.price">
+        {{ loading ? 'Saving...' : 'Update Product' }}
+      </button>
+    </div>
+
+    <div *ngIf="error" class="alert error">{{ error }}</div>
+  </form>
+</div>

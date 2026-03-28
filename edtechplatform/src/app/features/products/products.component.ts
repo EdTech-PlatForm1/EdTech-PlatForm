@@ -22,7 +22,8 @@ export class ProductsComponent implements OnInit {
     this.error = '';
     this.productService.getAllProducts().subscribe({
       next: (products: Product[]) => {
-        this.products = products;
+        console.log('Component received products:', products);
+        this.products = products || [];
         this.loading = false;
       },
       error: (err: any) => {

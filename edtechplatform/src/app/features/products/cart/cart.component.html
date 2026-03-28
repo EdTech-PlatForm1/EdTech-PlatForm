@@ -1,0 +1,60 @@
+<div class="cart-container container">
+  <div class="header">
+    <h1>🛒 Your Cart</h1>
+    <button class="back-btn" (click)="router.navigate(['/products'])">← Continue Shopping</button>
+  </div>
+
+  <ng-container *ngIf="cartItems$ | async as cartItems; else loadingCart">
+    <div *ngIf="cartItems.length === 0" class="empty-cart">
+      <div class="empty-icon">📂</div>
+      <p>Your cart is empty! Start adding some kits to your collection.</p>
+      <button class="shop-now" (click)="router.navigate(['/products'])">Shop Now</button>
+    </div>
+
+    <div *ngIf="cartItems.length > 0" class="cart-content">
+      <div class="cart-items-list">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <div class="item-img">
+            <img [src]="item.product.images[0] || '/assets/placeholder.jpg'" [alt]="item.product.productName">
+          </div>
+          <div class="item-details">
+            <h3>{{ item.product.productName }}</h3>
+            <p class="price">${{ item.product.finalPrice }}</p>
+            <div class="quantity-control">
+              <button (click)="onUpdateQuantity(item.product._id, item.quantity - 1)">-</button>
+              <span>{{ item.quantity }}</span>
+              <button (click)="onUpdateQuantity(item.product._id, item.quantity + 1)">+</button>
+            </div>
+          </div>
+          <div class="item-subtotal">
+            <p>${{ (item.product.finalPrice || item.product.price || 0) * item.quantity | currency }}</p>
+            <button class="remove-btn" (click)="onRemoveItem(item.product._id)">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <div class="summary-row">
+          <span>Items ({{ cartItems.length }})</span>
+          <span>{{ getTotalPrice() | currency }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span class="free">FREE</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>{{ getTotalPrice() | currency }}</span>
+        </div>
+        <button class="checkout-btn" (click)="onCheckout()">Proceed to Checkout ✅</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loadingCart>
+    <div class="loading-state">
+      <p>Loading your cart data...</p>
+    </div>
+  </ng-template>
+</div>

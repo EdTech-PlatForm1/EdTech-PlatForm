@@ -3,6 +3,8 @@ import { cartModel } from "../../DB/model/cart.model.js";
 import productModel from "../../DB/model/products.schema.js";
 
 export const addProductToCart = async (req, res) => {
+  console.log('AddProductToCart headers:', req.headers);
+  console.log('AddProductToCart body:', req.body);
   try {
     const userId = req.userID;
     const { productId, quantity } = req.body;

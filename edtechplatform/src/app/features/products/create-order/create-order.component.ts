@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService, Order, CreateOrderPayload, OrderProduct } from '../../../core/services/order.service';
@@ -7,6 +10,8 @@ import { CartService, CartItem } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-create-order',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './create-order.component.html',
   styleUrls: ['./create-order.component.css']
 })
@@ -38,10 +43,22 @@ export class CreateOrderComponent implements OnInit {
       this.isSinglePurchase = true;
       this.loadSingleProduct(productId);
     } else {
-      this.checkoutItems = this.cartService.getCartItems();
-      if (this.checkoutItems.length === 0) {
-        this.router.navigate(['/products/cart']);
-      }
+      this.loading = true;
+      this.cartService.cartItems$.subscribe({
+        next: (items) => {
+          this.checkoutItems = items;
+          this.loading = false;
+          if (items.length === 0 && !this.loading) {
+            // Give it a tiny delay to ensure backend fetch isn't just about to emit
+            setTimeout(() => {
+              if (this.checkoutItems.length === 0) {
+                 this.router.navigate(['/products/cart']);
+              }
+            }, 500);
+          }
+        },
+        error: () => this.loading = false
+      });
     }
   }
 
