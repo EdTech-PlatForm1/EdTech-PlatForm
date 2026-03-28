@@ -1,1 +1,31 @@
-<p>wishlist works!</p>
+<div class="dashboard-header-bg text-center">
+  <h1>MY WISHLIST</h1>
+</div>
+
+<div class="dashboard-content">
+  <div class="cards-grid" *ngIf="wishlistItems && wishlistItems.length > 0; else emptyWish">
+    <div class="product-card" *ngFor="let course of wishlistItems; let i = index">
+      <div class="card-img-wrapper">
+        <img [src]="course.image || 'assets/placeholder.png'" alt="course">
+      </div>
+      <div class="card-body">
+        <h4>{{ course.title }}</h4>
+        <p>{{ course.instructor || 'Instructor Name' }}</p>
+        <div class="card-actions">
+          <span class="price">{{ course.price | currency }}</span>
+          <div class="action-buttons">
+            <button class="btn-primary-dark" (click)="addToCart(course)">Add to Cart</button>
+            <button class="btn-remove-dark" (click)="removeFromWishlist(i)">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyWish>
+    <div class="empty-state text-center">
+      <h4>Your wishlist is empty</h4>
+      <p>Go back to the dashboard to add some courses.</p>
+    </div>
+  </ng-template>
+</div>
