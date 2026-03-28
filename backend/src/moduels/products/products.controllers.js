@@ -1,5 +1,5 @@
-import Product from "./products.schema.js";
-import Order from "../orders/orders.schema.js";
+import Product from "../../DB/model/products.schema.js";
+import Order from "../../DB/model/orders.schema.js";
 
 export const createProduct = async (req, res) => {
   try {

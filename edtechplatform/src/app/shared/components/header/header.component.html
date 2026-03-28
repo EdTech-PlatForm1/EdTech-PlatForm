@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <div class="second-navbar">
+  <div class="second-navbar" *ngIf="isLoggedIn">
     <div class="container nav-links" *ngIf="!isAdminView">
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
       <a routerLink="/orders" routerLinkActive="active">My Orders</a>

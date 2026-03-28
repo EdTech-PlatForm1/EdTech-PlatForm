@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service'; 
+import { WishlistService } from '../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,25 +12,23 @@ import { CartService } from '../../core/services/cart.service';
 export class DashboardComponent implements OnInit {
   user: any;
 
- 
   constructor(
     private authService: AuthService,
-    private cartService: CartService 
+    private cartService: CartService,
+    private wishlistService: WishlistService
   ) {}
 
   ngOnInit() {
     this.user = this.authService.getUser();
   }
 
-  
   addToCart(product: any) {
     this.cartService.addToCart(product);
-    
     alert(product.title + ' added to cart!');
   }
   
-addToWishlist(product: any) {
-  
-  alert(product.title + ' added to Wishlist!');
-}
+  addToWishlist(product: any) {
+    this.wishlistService.addToWishlist(product);
+    alert(product.title + ' added to Wishlist!');
+  }
 }

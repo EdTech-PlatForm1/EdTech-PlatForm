@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../services/api/api';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../core/services/api/api';
 
 @Component({
   selector: 'app-reviews',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './review.html',
   styleUrls: ['./review.css']
 })
 export class ReviewsComponent implements OnInit {
-
   reviews: any[] = [];
   loading = false;
 
@@ -17,19 +20,17 @@ export class ReviewsComponent implements OnInit {
     comment: ''
   };
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
 
-ngOnInit(): void {
-  localStorage.setItem("token", "Put your Token here")
-  this.getReviews();
-}
-  // Load all reviews
+  ngOnInit(): void {
+    this.getReviews();
+  }
+
   getReviews() {
     this.loading = true;
-
     this.api.getReviews().subscribe({
       next: (res: any) => {
-        this.reviews = res.reviews;
+        this.reviews = res.reviews || [];
         this.loading = false;
       },
       error: (err) => {
@@ -39,7 +40,6 @@ ngOnInit(): void {
     });
   }
 
-  //  Add review
   addReview() {
     if (!this.form.productId) {
       alert("Product ID required");
@@ -53,7 +53,7 @@ ngOnInit(): void {
         this.resetForm();
       },
       error: (err) => {
-        alert(err.error.message);
+        alert(err.error?.message || 'Failed to add review.');
       }
     });
   }

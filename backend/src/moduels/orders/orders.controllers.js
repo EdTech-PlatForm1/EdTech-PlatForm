@@ -1,5 +1,5 @@
-import Product from "../DB/model/products.schema.js";
-import Order from "./orders.schema.js";
+import Product from "../../DB/model/products.schema.js";
+import Order from "../../DB/model/orders.schema.js";
 import mongoose from "mongoose";
 export const createOrder = async (req, res) => {
   const session = await mongoose.startSession();

@@ -12,14 +12,3 @@ import { SharedModule } from './shared/shared.module';
 export class AppComponent {
   title = 'edtechplatform';
 }
-
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-
-@NgModule({
-  imports: [
-    FormsModule,
-    HttpClientModule
-  ]
-})

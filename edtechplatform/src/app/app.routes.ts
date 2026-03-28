@@ -1,9 +1,10 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { ReviewsComponent } from './pages/review/review';
+import { ReviewsComponent } from './features/review/review';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'store', pathMatch: 'full' },
+  { path: 'store', loadChildren: () => import('./features/store/store.module').then(m => m.StoreModule) },
   { path: 'dashboard', loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'orders', loadChildren: () => import('./features/orders/orders.module').then(m => m.OrdersModule) },
   { path: 'tutorials', loadChildren: () => import('./features/tutorials/tutorials.module').then(m => m.TutorialsModule) },
