@@ -8,6 +8,8 @@ export const auth = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SIGNATURE)
         req.user = decoded;
+        req.user.id = decoded.id;
+        req.user._id = decoded.id;
         req.userID = decoded.id;
         next()
     } catch (error) {

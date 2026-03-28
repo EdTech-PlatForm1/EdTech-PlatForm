@@ -1,5 +1,6 @@
 
 import { wishlistModel } from "../../DB/model/withlist.model.js";
+import productsSchema from "../../DB/model/products.schema.js";
 
 export const addToWishlist = async (req, res, next) => {
   try {

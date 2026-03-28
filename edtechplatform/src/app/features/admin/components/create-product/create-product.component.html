@@ -1,0 +1,54 @@
+<div class="create-product container">
+  <div class="header">
+    <button (click)="goBack()">← Back to products</button>
+    <h1>Add New Product</h1>
+  </div>
+
+  <form (submit)="onSubmit(); $event.preventDefault()" class="product-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Product Name</label>
+        <input type="text" [(ngModel)]="productData.productName" name="productName" placeholder="Enter product name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" [(ngModel)]="productData.category" name="category" placeholder="e.g. Robotics, Physics" required>
+      </div>
+
+      <div class="form-group">
+        <label>Price ($)</label>
+        <input type="number" [(ngModel)]="productData.price" name="price" placeholder="0.00" required>
+      </div>
+
+      <div class="form-group">
+        <label>Discount (%)</label>
+        <input type="number" [(ngModel)]="productData.discount" name="discount" placeholder="0%">
+      </div>
+
+      <div class="form-group">
+        <label>Stock Quantity</label>
+        <input type="number" [(ngModel)]="productData.stock" name="stock" placeholder="0" required>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Description</label>
+        <textarea [(ngModel)]="productData.description" name="description" placeholder="Product description..." required></textarea>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Product Images</label>
+        <input type="file" multiple (change)="onFileChange($event)" class="file-input">
+        <p class="file-hint">Select one or more images for the product gallery.</p>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="submit-btn" [disabled]="loading || !productData.productName || !productData.price">
+        {{ loading ? 'Creating...' : 'Create Product' }}
+      </button>
+    </div>
+
+    <div *ngIf="error" class="alert error">{{ error }}</div>
+  </form>
+</div>

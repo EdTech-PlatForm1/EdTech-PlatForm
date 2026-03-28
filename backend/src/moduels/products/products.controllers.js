@@ -289,9 +289,9 @@ export const getTutorialsForUser = async (req, res) => {
 
     const order = await Order.findOne({
       user: userId,
-      
       "products.product": productId,
-      status: "delivered"
+      status: "delivered",
+      isDeleted: false
     });
 
     if (!order) {
@@ -466,7 +466,8 @@ export const getChallengesForUser = async (req, res) => {
     const order = await Order.findOne({
       user: userId,
       "products.product": productId,
-      status: "delivered"
+      status: "delivered",
+      isDeleted: false
     });
 
     if (!order) {

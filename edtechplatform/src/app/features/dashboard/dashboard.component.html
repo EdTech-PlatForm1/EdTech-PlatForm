@@ -1,49 +1,74 @@
 <div class="dashboard-header-bg">
-  <div class="container text-center">
-    <h1>HI, {{ user?.name | uppercase }}!</h1>
+  <div class="text-center">
+    <h1>{{ hasPurchased ? 'DASHBOARD' : 'GET STARTED' }}</h1>
+    <p style="color: #666; font-weight: 600; margin-top: 5px;">
+      Welcome back, {{ user?.username || 'Learner' }}! 🚀
+    </p>
   </div>
 </div>
 
-<div class="dashboard-content container">
-  
-  <div class="main-panel">
-    <h3 class="panel-title">You haven't purchased any subscriptions! Get started:</h3>
+<div class="dashboard-content">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" style="text-align: center; padding: 40px;">
+    <p>Loading your profile statistics...</p>
+  </div>
+
+  <!-- User with purchases: Show Stats & Progress -->
+  <div class="main-panel" *ngIf="!isLoading && hasPurchased">
+    <div class="action-bar">
+      <div>
+        <h3 style="margin: 0;">Resume your learning journey</h3>
+        <p style="margin: 5px 0 0; opacity: 0.8;">You have access to tutorials and challenges.</p>
+      </div>
+      <a routerLink="/tutorials" class="btn-start">Watch Tutorials</a>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-card">
+        <span class="stat-number">{{ stats.tutorials }}</span>
+        <span class="stat-label">Video Lessons</span>
+      </div>
+      <div class="progress-card">
+        <span class="stat-number">{{ stats.challenges }}</span>
+        <span class="stat-label">Tech Challenges</span>
+      </div>
+      <div class="progress-card">
+        <span class="stat-number">{{ stats.orders }}</span>
+        <span class="stat-label">Total Orders</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- New User: Show Purchase Recommendations -->
+  <div class="main-panel" *ngIf="!isLoading && !hasPurchased">
+    <h3 class="panel-title">Explore our learning kits to get started:</h3>
     
     <div class="cards-grid">
       
       <div class="product-card">
-        <div class="card-img-wrapper" style="background: url('https://placehold.co/400x250/f9f9f9/ccc?text=Creative+Kit') center/cover"></div>
+        <div class="card-img-wrapper" style="background: url('https://placehold.co/400x250/f4f4f4/666?text=Creative+Kit') center/cover"></div>
         <div class="card-body">
           <h4>Creative Kit</h4>
-          <p>Ages 6-10</p>
-          <div class="card-actions">
-            <button class="btn-add" (click)="addToCart({title: 'Creative Kit', price: 50, id: 1})">Add to Cart</button>
-            <button class="btn-wish" (click)="addToWishlist({title: 'Creative Kit', id: 1})">❤</button>
-          </div>
+          <p>The perfect entry into fabrication and design.</p>
+          <a routerLink="/products" style="display: block; margin-top: 15px; color: #E63946; font-weight: 700; text-decoration: none;">View in Store →</a>
         </div>
       </div>
 
       <div class="product-card">
-        <div class="card-img-wrapper" style="background: url('https://placehold.co/400x250/f9f9f9/ccc?text=Build+Box') center/cover"></div>
+        <div class="card-img-wrapper" style="background: url('https://placehold.co/400x250/f4f4f4/666?text=Build+Box') center/cover"></div>
         <div class="card-body">
           <h4>Build Box</h4>
-          <p>Ages 8-13</p>
-          <div class="card-actions">
-            <button class="btn-add" (click)="addToCart({title: 'Build Box', price: 75, id: 2})">Add to Cart</button>
-            <button class="btn-wish" (click)="addToWishlist({title: 'Build Box', id: 2})">❤</button>
-          </div>
+          <p>Intermediate engineering for growing minds.</p>
+          <a routerLink="/products" style="display: block; margin-top: 15px; color: #E63946; font-weight: 700; text-decoration: none;">View in Store →</a>
         </div>
       </div>
 
       <div class="product-card">
-        <div class="card-img-wrapper" style="background: url('https://placehold.co/400x250/f9f9f9/ccc?text=Hack+Pack') center/cover"></div>
+        <div class="card-img-wrapper" style="background: url('https://placehold.co/400x250/f4f4f4/666?text=Hack+Pack') center/cover"></div>
         <div class="card-body">
           <h4>Hack Pack</h4>
-          <p>Ages 14-101</p>
-          <div class="card-actions">
-            <button class="btn-add" (click)="addToCart({title: 'Hack Pack', price: 100, id: 3})">Add to Cart</button>
-            <button class="btn-wish" (click)="addToWishlist({title: 'Hack Pack', id: 3})">❤</button>
-          </div>
+          <p>Advanced electronics and coding projects.</p>
+          <a routerLink="/products" style="display: block; margin-top: 15px; color: #E63946; font-weight: 700; text-decoration: none;">View in Store →</a>
         </div>
       </div>
 

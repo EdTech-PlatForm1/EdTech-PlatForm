@@ -44,7 +44,8 @@ export const addChallengeSchema = Joi.object({
     "string.empty": "Correct answer cannot be empty",
     "any.required": "Correct answer is required"
   })
-});
+}).unknown(true);
+
 export const addTutorialSchema = Joi.object({
   title: Joi.string().min(5).required().messages({
     "string.empty": "Tutorial title cannot be empty",
@@ -60,7 +61,7 @@ export const addTutorialSchema = Joi.object({
     "number.positive": "Duration must be greater than 0",
     "any.required": "Duration is required"
   })
-});
+}).unknown(true);
 
 export const updateChallengeSchema = Joi.object({
   question: Joi.string().min(3).messages({
@@ -71,7 +72,7 @@ export const updateChallengeSchema = Joi.object({
     "string.base": "Correct answer must be a string",
     "string.min": "Correct answer cannot be empty"
   }),
-});
+}).unknown(true);
 
 
 export const updateTutorialSchema = Joi.object({
@@ -87,7 +88,7 @@ export const updateTutorialSchema = Joi.object({
     "number.positive": "Duration must be greater than 0"
   }),
 
-});
+}).unknown(true);
 
 export const updateProductSchema = Joi.object({
   productName: Joi.string().trim().min(3).max(100).messages({

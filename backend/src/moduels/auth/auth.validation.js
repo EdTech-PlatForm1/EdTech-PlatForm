@@ -1,12 +1,18 @@
-import joi from 'joi'
-export const signup=joi.object().keys({
-username:joi.string().min(3).max(40).required(),
-email:joi.string().email({tlds:{allow:['com','net']},minDomainSegments:2,maxDomainSegments:3}).required(),
-password:joi.string().pattern(new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\w)(?!.* ).{8,16}$/)),
-confirmationpassword:joi.string().valid(joi.ref('password')).required()
-})
+import Joi from "joi";
 
-export const login=joi.object({
-  email:joi.string().email().required(),
-  password:joi.string().required(),
-});
+export const signupSchema = Joi.object({
+  username: Joi.string().min(3).max(40).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(4).max(1024).required(),
+  confirmationpassword: Joi.string().valid(Joi.ref('password')).required()
+}).required();
+
+export const loginSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+}).required();
+
+export const confirmEmailSchema = Joi.object({
+    email: Joi.string().email().required(),
+    otp: Joi.string().length(6).required()
+}).required();

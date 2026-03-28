@@ -1,0 +1,119 @@
+<div class="product-details-container" *ngIf="product">
+  <div class="product-header">
+    <button class="back-btn" (click)="router.navigate(['/products'])">← Back to Products</button>
+    <h1>{{ product.productName }}</h1>
+  </div>
+
+  <div class="product-content">
+    <div class="product-gallery">
+      <div class="main-image">
+        <img [src]="product.images[0] || '/assets/placeholder.jpg'" [alt]="product.productName" />
+      </div>
+      <div class="image-thumbnails" *ngIf="product.images.length > 1">
+        <img
+          *ngFor="let image of product.images; let i = index"
+          [src]="image"
+          [alt]="product.productName + ' ' + (i + 1)"
+          class="thumbnail"
+          [class.active]="i === 0"
+        />
+      </div>
+    </div>
+
+    <div class="product-summary">
+      <div class="price">${{ product.price }}</div>
+      <p class="description">{{ product.description }}</p>
+      <div class="summary-actions">
+        <button class="buy-now-btn" (click)="onAddToCart()">🛒 Add to Cart</button>
+        <button class="wishlist-btn" (click)="onAddToWishlist()">❤️ Add to Wishlist</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-section">
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'info'"
+        (click)="setTab('info')"
+      >
+        Product Info
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'tutorials'"
+        (click)="setTab('tutorials')"
+      >
+        Tutorials ({{ product.tutorials.length }})
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'reviews'"
+        (click)="setTab('reviews')"
+      >
+        Reviews ({{ reviews.length }})
+      </button>
+    </div>
+
+    <div class="tab-content">
+      <div *ngIf="activeTab === 'info'" class="info-tab">
+        <h3>Product Details</h3>
+        <p>{{ product.description }}</p>
+        <div class="specs">
+          <p><strong>Price:</strong> ${{ product.price }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'tutorials'" class="tutorials-tab">
+        <h3>Tutorials</h3>
+        <div *ngIf="product.tutorials.length === 0" class="empty-state">
+          No tutorials available for this product.
+        </div>
+        <div class="tutorial-item" *ngFor="let tutorial of product.tutorials">
+          <h4>{{ tutorial.title }}</h4>
+          <p *ngIf="tutorial.duration">Duration: {{ tutorial.duration }} mins</p>
+          <a *ngIf="tutorial.videoUrl" [href]="tutorial.videoUrl" target="_blank" class="tutorial-link">
+            Watch Tutorial →
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'reviews'" class="reviews-tab">
+        <h3>Customer Reviews</h3>
+        
+        <div class="add-review-form">
+          <h4>Leave a Review</h4>
+          <div class="form-group">
+            <label>Rating</label>
+            <select [(ngModel)]="newReview.rating">
+              <option *ngFor="let r of [5,4,3,2,1]" [value]="r">{{ r }} Stars</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Comment</label>
+            <textarea [(ngModel)]="newReview.comment" placeholder="Tell us what you think..."></textarea>
+          </div>
+          <button (click)="onAddReview()" [disabled]="!newReview.comment" class="submit-review-btn">Submit Review</button>
+        </div>
+
+        <div *ngIf="reviews.length === 0" class="empty-state">
+          No reviews yet. Be the first to review this product!
+        </div>
+
+        <div class="review-list">
+          <div class="review-item" *ngFor="let review of reviews">
+            <div class="review-header">
+              <span class="rating">⭐ {{ review.rating }}</span>
+              <span class="user">{{ review.userId?.username || 'Anonymous' }}</span>
+            </div>
+            <p class="comment">{{ review.comment }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading">Loading product details...</div>
+<div *ngIf="error" class="alert error">{{ error }}</div>

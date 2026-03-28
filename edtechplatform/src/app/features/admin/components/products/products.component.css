@@ -1,0 +1,83 @@
+.products-management {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-product-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 1rem;
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.product-thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.table-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #f1f5f9;
+}
+
+.delete-btn { color: #ef4444; }
+.edit-btn { background: #e0f2fe; color: #0ea5e9; }
+
+.crud-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #4f46e5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}

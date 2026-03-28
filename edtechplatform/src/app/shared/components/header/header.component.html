@@ -1,47 +1,43 @@
 <header class="main-header">
   <div class="top-navbar container">
     <div class="top-nav-left">
-      <a href="#" class="nav-link">Store</a>
-      <a href="#" class="nav-link">Our Company</a>
+      <a routerLink="/products" class="nav-link">Store</a>
     </div>
     
     <div class="logo-container">
-      <a href="/" class="logo">
+      <a routerLink="/" class="logo">
         <img src="assets/Logo.png" alt="FabPak Logo" class="logo-img">
         <span class="logo-text">FabPak</span>
       </a>
     </div>
 
     <div class="top-nav-right">
-      <a href="#" class="icon-link">
+      <a [routerLink]="['/wishlist']" class="icon-link" title="Wishlist">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+      </a>
+      <a [routerLink]="['/auth']" class="icon-link" title="User Profile">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </a>
-
-      <a routerLink="/wishlist" class="icon-link wishlist-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-        <span class="cart-count">0</span> </a>
-
-      <a routerLink="/cart" class="icon-link cart-link">
+      <a [routerLink]="['/products/cart']" class="icon-link cart-link" title="Cart">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-        <span class="cart-count">{{ cartCount }}</span>
+        <span class="cart-count">{{ (cartCount$ | async) || 0 }}</span>
       </a>
     </div>
   </div>
 
-  <div class="second-navbar" *ngIf="isLoggedIn">
-    <div class="container nav-links" *ngIf="!isAdminView">
+  <div class="second-navbar" *ngIf="isLoggedIn()">
+    <div class="container nav-links" *ngIf="!isAdmin()">
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
       <a routerLink="/orders" routerLinkActive="active">My Orders</a>
       <a routerLink="/tutorials" routerLinkActive="active">Tutorials</a>
       <a routerLink="/challenges" routerLinkActive="active">Challenges</a>
       <a routerLink="/profile" routerLinkActive="active">Profile</a>
     </div>
-    <div class="container nav-links" *ngIf="isAdminView">
+    <div class="container nav-links" *ngIf="isAdmin()">
       <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
       <a routerLink="/admin/orders" routerLinkActive="active">Orders</a>
       <a routerLink="/admin/products" routerLinkActive="active">Products</a>
       <a routerLink="/admin/users" routerLinkActive="active">Users</a>
-      <a routerLink="/admin/profile" routerLinkActive="active">Profile</a>
     </div>
   </div>
 </header>

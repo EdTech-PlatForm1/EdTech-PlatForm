@@ -20,6 +20,24 @@ emailEvent.emit("sendConfirmationEmail",{email})
   return res.status(200).json({message:"done",user})
 })
 
+export const confirmEmail=asynchandler(
+    async(req,res,next)=>{
+        const {email,otp}=req.body
+        const user=await usermodel.findOne({email})
+        if(!user){
+            return next(new Error("user not found",{cause:404}))
+        }
+        if(user.otp!==otp){
+            return next(new Error("wrong otp",{cause:400}))
+        }
+        if(user.otpExpiresAt < Date.now()){
+            return next(new Error("otp expired, please request a new one",{cause:400}))
+        }
+        await usermodel.updateOne({email},{confirmEmail:true,$unset:{otp:1, otpExpiresAt: 1}})
+        return res.status(200).json({message:"email confirmed successfully"})
+    }
+)
+
 
 
 export const login = asynchandler(
@@ -28,6 +46,9 @@ export const login = asynchandler(
     const user = await usermodel.findOne({ email });
     if (!user){
       return next(new Error("invalid email or password",{cause:400}));
+    }
+    if(!user.confirmEmail){
+        return next(new Error("please confirm your email first",{cause:400}))
     }
     const match = compareHash({ plainText: password, hashValue: user.password });
     if (!match) {
@@ -47,6 +68,11 @@ export const login = asynchandler(
       message: "login success",
       accessToken,
       refreshToken,
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
     });
   }
 );
