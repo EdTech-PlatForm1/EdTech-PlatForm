@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, RouterModule]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isAdminView = false;
   cartCount$ = this.cartService.cartItems$.pipe(
     map(items => items.reduce((acc, item) => acc + item.quantity, 0))
@@ -25,7 +25,8 @@ export class HeaderComponent {
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.isAdminView = event.urlAfterRedirects.includes('/admin');
+        this.isLoggedIn = this.authService.isAuthenticated();
+        this.isAdminView = this.isLoggedIn && event.urlAfterRedirects.includes('/admin');
       }
     });
   }

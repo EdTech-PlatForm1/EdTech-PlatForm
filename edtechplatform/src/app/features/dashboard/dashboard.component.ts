@@ -60,4 +60,14 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  addToCart(product: any) {
+    this.cartService.addToCart(product);
+    alert(product.title + ' added to cart!');
+  }
+  
+  addToWishlist(product: any) {
+    this.wishlistService.addToWishlist(product);
+    alert(product.title + ' added to Wishlist!');
+  }
 }

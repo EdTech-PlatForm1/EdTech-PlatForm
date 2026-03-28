@@ -1,0 +1,125 @@
+
+.dashboard-header-bg {
+  background-image: 
+    linear-gradient(#f0f0f0 1px, transparent 1px),
+    linear-gradient(90deg, #f0f0f0 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-color: #fcfcfc;
+  padding: 60px 0 40px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 40px;
+}
+
+.text-center { text-align: center; }
+
+.dashboard-header-bg h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #333;
+  margin: 0;
+}
+
+.dashboard-content {
+  display: block;
+  margin-bottom: 80px;
+  margin-right: 50px;
+  margin-left: 50px;
+}
+
+
+.border-dark-box {
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #fff;
+  padding: 20px;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cart-table th {
+  text-align: left;
+  padding: 15px;
+  font-weight: 800;
+  color: #333;
+  border-bottom: 2px solid #333;
+}
+
+.cart-table td {
+  padding: 20px 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.cart-item-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart-img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.cart-item-info h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #333;
+}
+
+.price-col {
+  font-weight: 600;
+  color: #666;
+}
+
+.cart-summary {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-row span {
+  font-size: 20px;
+  color: #333;
+}
+
+.total-price {
+  font-weight: 800;
+  margin-left: 10px;
+}
+
+
+.btn-primary-dark {
+  background: #333;
+  color: #fff;
+  border: 1px solid #333;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-remove-dark {
+  background: transparent;
+  color: #333;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.empty-state {
+  padding: 60px 20px;
+}

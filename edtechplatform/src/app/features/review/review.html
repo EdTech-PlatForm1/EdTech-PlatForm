@@ -1,0 +1,36 @@
+<div class="container">
+
+  <h2>⭐ Product Reviews</h2>
+
+  <!-- Add Review Form -->
+  <div class="form-box">
+    <input [(ngModel)]="form.productId" placeholder="Product ID">
+
+    <select [(ngModel)]="form.rating">
+      <option *ngFor="let r of [1,2,3,4,5]" [value]="r">
+        {{r}}
+      </option>
+    </select>
+
+    <textarea [(ngModel)]="form.comment" placeholder="Write your review..."></textarea>
+
+    <button (click)="addReview()">Submit Review</button>
+  </div>
+
+  <hr>
+
+  <!-- Loading -->
+  <div *ngIf="loading">Loading...</div>
+
+  <!-- Reviews List -->
+  <div *ngFor="let r of reviews" class="review-card">
+    <div class="rating">
+        {{r.rating}} / 5
+    </div>
+
+    <p class="comment">{{r.comment}}</p>
+
+    <small>Product: {{r.productId}}</small>
+  </div>
+
+</div>
