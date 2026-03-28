@@ -1,43 +1,46 @@
-<div class="container mt-5">
-  <h2 class="mb-4">Shopping Cart ({{ cartItems.length }})</h2>
+<div class="dashboard-header-bg text-center">
+  <h1>SHOPPING CART</h1>
+</div>
 
-  <div class="cart-table card shadow-sm p-4">
-    <table class="table">
+<div class="dashboard-content">
+  <div class="cart-container border-dark-box">
+    <table class="cart-table" *ngIf="cartItems.length > 0; else emptyCart">
       <thead>
         <tr>
-          <th>Product Name</th>
+          <th>Product</th>
           <th>Price</th>
-          <th class="text-center">Action</th>
+          <th style="text-align: right;">Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngIf="cartItems.length === 0">
-          <td colspan="3" class="text-center py-4">
-            <p class="text-muted">Your cart is empty! Go grab some kits.</p>
-            <a routerLink="/dashboard" class="btn btn-primary btn-sm">Back to Dashboard</a>
-          </td>
-        </tr>
-
         <tr *ngFor="let item of cartItems; let i = index">
-          <td>{{ item.title }}</td>
-          <td>{{ item.price | currency }}</td>
-          <td class="text-center">
-            <button class="btn btn-danger btn-sm" (click)="removeItem(i)">Remove</button>
+          <td>
+            <div class="cart-item-info">
+              <img [src]="item.image || 'assets/placeholder.png'" alt="course" class="cart-img">
+              <h4>{{ item.title }}</h4>
+            </div>
+          </td>
+          <td class="price-col">{{ item.price | currency }}</td>
+          <td style="text-align: right;">
+            <button class="btn-remove-dark" (click)="removeItem(i)">Remove</button>
           </td>
         </tr>
       </tbody>
-      
-      <tfoot *ngIf="cartItems.length > 0">
-        <tr>
-          <td class="fw-bold">Total</td>
-          <td class="fw-bold text-success">{{ totalPrice | currency }}</td>
-          <td></td>
-        </tr>
-      </tfoot>
     </table>
 
-    <div class="text-end mt-3" *ngIf="cartItems.length > 0">
-      <button class="btn btn-success px-5">Checkout</button>
+    <div class="cart-summary" *ngIf="cartItems.length > 0">
+      <div class="total-row">
+        <span>Total:</span>
+        <span class="total-price">{{ totalPrice | currency }}</span>
+      </div>
+      <button class="btn-primary-dark checkout-btn">Proceed to Checkout</button>
     </div>
+
+    <ng-template #emptyCart>
+      <div class="empty-state text-center">
+        <h4>Your cart is empty</h4>
+        <p>Go back to the dashboard to explore courses.</p>
+      </div>
+    </ng-template>
   </div>
 </div>
